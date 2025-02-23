@@ -7,6 +7,8 @@ class InputField extends StatefulWidget {
   final String iconPath;
   final String type;
   final String error;
+  final double fieldHeight;
+  final double errorHeight;
   final TextEditingController controller;
 
   InputField({
@@ -14,6 +16,8 @@ class InputField extends StatefulWidget {
     required this.iconPath, 
     required this.type, 
     required this.error,
+    required this.fieldHeight,
+    required this.errorHeight,
     required this.controller
   });
 
@@ -34,7 +38,7 @@ class _InputFieldState extends State<InputField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 140.0,
+      height: widget.fieldHeight,
       child: Column(
         children: [
           _field_selector(
@@ -50,6 +54,7 @@ class _InputFieldState extends State<InputField> {
 
           Container(
             width: double.infinity,
+            height: widget.errorHeight,
             child: Text(
               widget.error,
               textAlign: TextAlign.left,

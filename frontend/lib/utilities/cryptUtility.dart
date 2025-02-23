@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:pointycastle/export.dart';
-// import 'package:pointycastle/api.dart' as api;
 
+final String key = '108afFbB90cC34e6';
+final String iv = 'abcdefghijklmnop';
 
-Uint8List encrypt(String data, String key, String iv) {
+String encrypt(String data) {
   final Uint8List dataBytes = utf8.encode(data);
   final Uint8List keyBytes = utf8.encode(key);
   final Uint8List ivBytes = utf8.encode(iv);
@@ -18,10 +19,12 @@ Uint8List encrypt(String data, String key, String iv) {
     ),
   );
 
-  return cipher.process(dataBytes);
+  final Uint8List encryptedBytes = cipher.process(dataBytes);
+  return base64.encode(encryptedBytes);
 }
 
-String decrypt(Uint8List encrypted, String key, String iv) {
+String decrypt(String encrypted) {
+  final Uint8List encryptedBytes = base64.decode(encrypted);
   final Uint8List keyBytes = utf8.encode(key);
   final Uint8List ivBytes = utf8.encode(iv);
 
@@ -34,6 +37,6 @@ String decrypt(Uint8List encrypted, String key, String iv) {
     ),
   );
 
-  final Uint8List decryptedBytes = cipher.process(encrypted);
+  final Uint8List decryptedBytes = cipher.process(encryptedBytes);
   return utf8.decode(decryptedBytes);
 }

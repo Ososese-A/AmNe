@@ -68,8 +68,8 @@ class _IntroPageState extends State<IntroPage> {
                     dotHeight:  16.0,    
                     // paintStyle:  PaintingStyle.stroke,    
                     strokeWidth:  1.5,    
-                    dotColor:  customColors.app_dark_b,    
-                    activeDotColor: customColors.app_dark_a    
+                    dotColor:  customColors.app_light_b,    
+                    activeDotColor: customColors.app_light_a    
                   ), 
                 ),
 

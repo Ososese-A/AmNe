@@ -5,8 +5,14 @@ import 'package:frontend/pages/intro_page.dart';
 import 'package:frontend/pages/login_page.dart';
 import 'package:frontend/pages/pin_page.dart';
 import 'package:frontend/pages/signup_page.dart';
+import 'package:hive_flutter/adapters.dart';
 
-void main() {
+void main() async {
+  //hive setup box
+  await Hive.initFlutter();
+
+  var con = await Hive.openBox('dis');
+
   runApp(const MyApp());
 }
 

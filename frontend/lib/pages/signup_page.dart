@@ -1,11 +1,15 @@
-import 'dart:typed_data';
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/add_ons/google_btn.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
-import 'package:frontend/utilities/crypt.dart';
+import 'package:frontend/utilities/authUtility.dart';
+import 'package:frontend/utilities/cryptUtility.dart';
+import 'package:frontend/utilities/navigatorUtility.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -15,7 +19,8 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  String errMsg = "";
+  String eErrMsg = "";
+  String pErrMsg = "";
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -28,22 +33,109 @@ class _SignupPageState extends State<SignupPage> {
     super.dispose();
   }
 
-  void _signup () {
-    final String key = '108afFbB90cC34e6';
-    final String initVector = 'abcdefghijklmnop';
-
+  void _signup () async {
     final String eData = emailController.text;
     final String pData = passwordController.text;
     print('Pre encryption Email: ${eData}');
     print('Pre encryption Password: ${pData}');
 
-    final Uint8List enPData = encrypt(pData, key, initVector);
-    final Uint8List enEData = encrypt(eData, key, initVector);
+    final String enPData = encrypt(pData);
+    final String enEData = encrypt(eData);
 
-    final String deEData =  decrypt(enEData, key, initVector);
+    final String deEData =  decrypt(enEData);
+    final String dePData =  decrypt(enPData);
     print('Post encryption Email: ${enEData}');
     print('Post encryption decrypted Email: ${deEData}');
     print('Post encryption Password: ${enPData}');
+    print('Post encryption decrypted Password: ${dePData}');
+
+
+    try {
+      var res = await Dio().post(
+        'http://192.168.31.190:8080/api/signup/',
+        data: {
+          // "email": enEData,
+          // "password": enPData
+          "email": enEData,
+          "password": enPData
+        }
+      );
+
+      String response = res.toString();
+      print('Response: $response');
+      final result = jsonDecode(response);
+      // print('Response: ${result['id']}');
+      // print('Response: ${result['token']}');
+      final _uId = result['id'];
+      final _jId = result['token'];
+      print('User: ${_uId}');
+      print('Json: ${_jId}');
+
+      setState(() {
+        eErrMsg = "";
+        pErrMsg = "";
+      });
+
+      if (result['id'] != null) {
+        setU(_uId);
+        setJ(_jId);
+        print('The setup works');
+        nextPage(context, '/pin');
+      }
+    } on DioException catch (e) {
+      print('Error: ${e.response?.data}');
+
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        setState(() {
+          eErrMsg = e.response?.data['error'];
+        });
+      } else {
+        final errorMsg = e.response?.data;
+
+          List <String> emailErrors = [];
+          List <String> passwordErrors = [];
+
+          for (var error in errorMsg['errorMsg']) {
+            if (error['path'] == 'email') {
+              emailErrors.add(error['msg']);
+            } else if (error['path'] == 'password') {
+              passwordErrors.add(error['msg']);
+            }
+          }
+
+          if (emailErrors != [] && passwordErrors == []) {
+              String emailErrorDisplay = emailErrors.join('\n');
+              print('Email Error: $emailErrorDisplay');
+              setState(() {
+                eErrMsg = emailErrorDisplay;
+                pErrMsg = "";
+              });
+          } else if (emailErrors == [] && passwordErrors != []) {
+              String passwordErrorDisplay = passwordErrors.join('\n');
+              print('Password Error: $passwordErrorDisplay');
+              setState(() {
+                pErrMsg = passwordErrorDisplay;
+                eErrMsg = "";
+              });
+          } else if (emailErrors != [] && passwordErrors != []) {
+              String emailErrorDisplay = emailErrors.join('\n');
+              String passwordErrorDisplay = passwordErrors.join('\n');
+              print('Email Error: $emailErrorDisplay');
+              print('Password Error: $passwordErrorDisplay');
+              setState(() {
+                  eErrMsg = emailErrorDisplay;
+                  pErrMsg = passwordErrorDisplay;
+                });
+          } else {
+              final defaultError = "An Unknown Error Occured, Please try again";
+              setState(() {
+                eErrMsg = defaultError;
+                pErrMsg = "";
+              });
+          }
+      }
+    }
   }
 
   @override
@@ -58,19 +150,25 @@ class _SignupPageState extends State<SignupPage> {
           child: Column(
             children: [
               SizedBox(height: 56.0,),
+
               InputField(
                 placeholder: "Email Address", 
                 iconPath: "assets/icons/mail.svg", 
                 type:  "normal",
-                error: errMsg != "" ? errMsg : "",
+                error: eErrMsg != "" ? eErrMsg : "",
+                fieldHeight: 140.0,
+                errorHeight: 40.0,
                 controller: emailController,
               ),
+
           
               InputField(
                 placeholder: "Password", 
                 iconPath: "assets/icons/password.svg", 
                 type:  "password",
-                error: errMsg != "" ? errMsg : "",
+                error: pErrMsg != "" ? pErrMsg : "",
+                fieldHeight: 220.0,
+                errorHeight: 120.0,
                 controller: passwordController,
               ),
         
