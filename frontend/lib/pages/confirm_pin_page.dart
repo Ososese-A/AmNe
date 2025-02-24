@@ -60,7 +60,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
       });
     }
     _assignPin(cPin);
-    setMainPage(context, "/home");
+    setMainPage(context, "/main");
   }
 
   void _assignPin (cPin) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/add_ons/alt_app_bar.dart';
 import 'package:frontend/add_ons/pin_dot.dart';
 import 'package:frontend/components/key_pad.dart';
 import 'package:frontend/themes/theme.dart';
@@ -64,18 +65,7 @@ class _PinPageState extends State<PinPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: customColors.app_black,
-        title: Center(
-          child: Text(
-            "Pin Setup",
-            style: TextStyle(
-              color: customColors.app_white,
-              fontSize: 32.0
-            ),
-          ),
-        ),
-      ),
+      appBar: alt_app_bar("Pin Setup"),
       backgroundColor: customColors.app_black,
       body: Center(
         child: Column(

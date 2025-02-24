@@ -123,7 +123,7 @@ Widget _field_selector(
     case "address":
       return Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-        height: 66.0,
+        height: 120.0,
         decoration: BoxDecoration(
           border: Border.all(
             color: customColors.app_white,
@@ -131,8 +131,8 @@ Widget _field_selector(
           ),
           borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Center(
-          child: Row(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               svg_box(28.0, 28.0, iconPath),
               SizedBox(width: 16.0,),
@@ -150,7 +150,6 @@ Widget _field_selector(
               ),
             ],
           )
-        ),
       );
 
     case "upload":

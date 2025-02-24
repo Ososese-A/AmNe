@@ -40,6 +40,7 @@ dependencies:
   dio: ^5.8.0+1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  curved_navigation_bar: ^1.0.6
 
 dev_dependencies:
   flutter_test:
@@ -72,14 +73,35 @@ flutter:
     - assets/images/vault_a.svg
     - assets/images/launch_a.svg
     - assets/images/auth_a.svg
+    - assets/images/wordmark_a.svg
+    - assets/images/empty_portfolio_a.svg
+    - assets/images/empty_transactions_a.svg
+    - assets/images/stock_not_found_a.svg
+    - assets/images/wordmark.svg
+    - assets/images/profile_circle_a.png
 
     - assets/icons/back_arrow.svg
+    - assets/icons/front_arrow.svg
     - assets/icons/google.svg
     - assets/icons/mail.svg
     - assets/icons/obscure.svg
     - assets/icons/password.svg
     - assets/icons/unobscure.svg
     - assets/icons/x.svg
+    - assets/icons/notification.svg
+    - assets/icons/filter.svg
+    - assets/icons/home_active.svg
+    - assets/icons/profile_active.svg
+    - assets/icons/stock_active.svg
+    - assets/icons/wallet_active.svg
+    - assets/icons/home_normal.svg
+    - assets/icons/profile_normal.svg
+    - assets/icons/stock_normal.svg
+    - assets/icons/wallet_normal.svg
+    - assets/icons/copy.svg
+    - assets/icons/search.svg
+    - assets/icons/phone.svg
+    - assets/icons/address.svg
     
 
   # An image asset can refer to one or more resolution-specific "variants", see
