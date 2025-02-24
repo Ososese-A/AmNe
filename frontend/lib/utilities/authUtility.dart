@@ -12,10 +12,19 @@ String getJ () {
   return j;
 }
 
+String getP () {
+  final p = _con.get(3);
+  return p;
+}
+
 void setU (u) {
   _con.put(1, u);
 }
 
 void setJ (j) {
   _con.put(2, j);
+}
+
+void setP (p) {
+  _con.put(3, p);
 }

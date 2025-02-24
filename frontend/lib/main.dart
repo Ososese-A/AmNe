@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/pages/auth_page.dart';
+import 'package:frontend/pages/confirm_pin_page.dart';
+import 'package:frontend/pages/enter_pin_page.dart';
 import 'package:frontend/pages/home_page.dart';
 import 'package:frontend/pages/intro_page.dart';
 import 'package:frontend/pages/login_page.dart';
@@ -24,13 +26,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Comfortaa'),
       home: IntroPage(),
+      // home: PinPage(),
       routes: {
         '/home' : (context) => HomePage(),
         '/login' : (context) => LoginPage(),
         '/signup' : (context) => SignupPage(),
         '/intro' : (context) => IntroPage(),
         '/auth': (context) => AuthPage(),
-        '/pin': (context) => PinPage()
+        '/pin': (context) => PinPage(),
+        '/cpin': (context) => ConfirmPinPage(),
+        '/epin': (context) => EnterPinPage()
       },
     );
   }

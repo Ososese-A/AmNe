@@ -21,5 +21,5 @@ export const userValidationSchema = {
         notEmpty: {
             errorMessage: "Password must not be empty"
         }
-    },
+    }
 }

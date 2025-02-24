@@ -79,6 +79,8 @@ flutter:
     - assets/icons/obscure.svg
     - assets/icons/password.svg
     - assets/icons/unobscure.svg
+    - assets/icons/x.svg
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

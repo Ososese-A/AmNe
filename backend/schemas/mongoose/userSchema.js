@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     password : {
         type: mongoose.Schema.Types.String,
         required: true
+    },
+
+    pin : {
+        type : mongoose.Schema.Types.String,
     }
 })
 
@@ -72,6 +76,23 @@ userSchema.statics.login = async function (data) {
 
     if (!match) {
         throw Error(JSON.stringify({pError: 'Incorrect Password'}))
+    }
+
+    return user
+}
+
+userSchema.statics.assignPin = async function (data) {
+    const pin = data.pin
+    const id = data.id
+
+    if (!pin) {
+        throw Error("Pin cannot be empty")
+    }
+
+    const user = await this.findOneAndUpdate({id}, {pin}, {new: true})
+
+    if (!user) {
+        throw Error("Incorrect Pin")
     }
 
     return user
