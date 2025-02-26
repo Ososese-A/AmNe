@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/themes/theme.dart';
-import 'package:frontend/utilities/navigatorUtility.dart';
 
 AppBar main_app_bar (BuildContext ctx) {
   return AppBar(
+    automaticallyImplyLeading: false,
     backgroundColor: customColors.app_black,
     title: 
     GestureDetector(

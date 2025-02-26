@@ -51,7 +51,8 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       var res = await Dio().post(
-        'http://192.168.31.190:8080/api/login/',
+        // 'http://192.168.31.190:8080/api/login/',
+        'http://10.101.76.99:8080/api/login/',
         data: {
           "email": enEData,
           "password": enPData
@@ -84,9 +85,9 @@ class _LoginPageState extends State<LoginPage> {
 
     } on DioException catch (e) {
       final errorMsg = e.response?.data;
-      print('Error: ${e.response?.data}');
-      print("This is the type ${errorMsg.runtimeType}");
-      print("This is the type ${errorMsg['error'].runtimeType}");
+      // print('Error: ${e.response?.data}');
+      // print("This is the type ${errorMsg.runtimeType}");
+      // print("This is the type ${errorMsg['error'].runtimeType}");
 
       if (errorMsg['error'] != null) {
         final error = jsonDecode(errorMsg['error']);

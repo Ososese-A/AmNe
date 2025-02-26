@@ -7,11 +7,12 @@ Container stock_box ({
     String price = "0.00 ETN",
     String percent = "0.00%",
     String change = "0.00 ETN", 
-    bool positive = false
+    bool positive = false,
+    Color backgroundColor = const Color(0xff1C2541),
   }) {
   return Container(
     decoration: BoxDecoration(
-      color: customColors.app_dark_a,
+      color: backgroundColor,
       borderRadius: BorderRadius.circular(16.0)
     ),
     padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 24.0),

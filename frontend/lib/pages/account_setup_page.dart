@@ -3,6 +3,7 @@ import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/navigatorUtility.dart';
 
 class AccountSetupPage extends StatefulWidget {
   const AccountSetupPage({super.key});
@@ -79,7 +80,7 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                btn("Next", false, () {}),
+                btn("Next", false, () => next(context, '/kycUpload')),
               ],
             )
           ],

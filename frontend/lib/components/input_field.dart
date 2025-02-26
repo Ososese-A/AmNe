@@ -10,6 +10,7 @@ class InputField extends StatefulWidget {
   final double fieldHeight;
   final double errorHeight;
   final TextEditingController controller;
+  final bool isItBuy;
 
   InputField({
     required this.placeholder, 
@@ -18,7 +19,8 @@ class InputField extends StatefulWidget {
     required this.error,
     required this.fieldHeight,
     required this.errorHeight,
-    required this.controller
+    required this.controller,
+    this.isItBuy = false,
   });
 
   @override
@@ -47,7 +49,8 @@ class _InputFieldState extends State<InputField> {
             widget.iconPath, 
             obscure, 
             _toggle,
-            widget.controller
+            widget.controller,
+            widget.isItBuy
           ),
 
           SizedBox(height: 16.0,),
@@ -76,7 +79,8 @@ Widget _field_selector(
   String iconPath, 
   bool obscure, 
   _toggle,
-  TextEditingController controller
+  TextEditingController controller,
+  bool isItBuy
 ) {
   switch (type) {
     case "password":
@@ -152,37 +156,148 @@ Widget _field_selector(
           )
       );
 
-    case "upload":
-      return Container(
-        padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-        height: 66.0,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: customColors.app_white,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(16.0),
+    case "stock":
+      return 
+
+      isItBuy
+
+      ?
+      
+      Container(
+      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+      height: 66.0,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: customColors.app_light_b,
+          width: 1.0,
         ),
-        child: Center(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Center(
+        child: Row(
+          children: [
+            svg_box(28.0, 28.0, iconPath),
+            SizedBox(width: 16.0,),
+            Expanded(
+              child: TextField(
+                controller: controller,
+                obscureText: obscure,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: placeHolder,
+                  hintStyle: TextStyle(color: customColors.app_light_b),
+                ),
+                style: TextStyle(color: customColors.app_light_b),
+                cursorColor: customColors.app_light_a,
+              ),
+            ),
+            SizedBox(width: 16.0,),
+            GestureDetector(
+              child: svg_box(28.0, 28.0, "assets/icons/edit.svg"),
+              onTap: () {},
+            ),
+          ],
+        )
+      ),
+    )
+
+    :
+
+    Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          height: 66.0,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: customColors.app_white,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
           child: Row(
-            children: [
-              svg_box(28.0, 28.0, iconPath),
-              SizedBox(width: 16.0,),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: placeHolder,
-                    hintStyle: TextStyle(color: customColors.app_white),
+              children: [
+                svg_box(28.0, 28.0, iconPath),
+                SizedBox(width: 16.0,),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: placeHolder,
+                      hintStyle: TextStyle(color: customColors.app_white),
+                    ),
+                    style: TextStyle(color: customColors.app_white),
+                    cursorColor: customColors.app_light_a,
                   ),
-                  style: TextStyle(color: customColors.app_white),
-                  cursorColor: customColors.app_light_a,
+                ),
+              ],
+            )
+          ),
+
+          SizedBox(height: 16.0,),
+
+          GestureDetector(
+              onTap: () {},
+              child: Text(
+                "Max",
+                style: TextStyle(
+                    color: customColors.app_light_a,
+                    fontSize: 16.0
                 ),
               ),
-            ],
-          )
-        ),
+            )
+        ],
+      );
+
+    case "amount":
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+          padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          height: 66.0,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: customColors.app_white,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Row(
+              children: [
+                svg_box(28.0, 28.0, iconPath),
+                SizedBox(width: 16.0,),
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: placeHolder,
+                      hintStyle: TextStyle(color: customColors.app_white),
+                    ),
+                    style: TextStyle(color: customColors.app_white),
+                    cursorColor: customColors.app_light_a,
+                  ),
+                ),
+              ],
+            )
+          ),
+
+          SizedBox(height: 16.0,),
+
+          GestureDetector(
+              onTap: () {},
+              child: Text(
+                "Max",
+                style: TextStyle(
+                    color: customColors.app_light_a,
+                    fontSize: 16.0
+                ),
+              ),
+            )
+        ],
       );
 
     case "normal":

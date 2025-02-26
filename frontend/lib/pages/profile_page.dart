@@ -93,8 +93,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    badge_btn("Reset pin"),
-                    badge_btn("Reset password"),
+                    badge_btn("Reset pin", () {}),
+                    badge_btn("Reset password", () {}),
                   ],
                 ),
               ),

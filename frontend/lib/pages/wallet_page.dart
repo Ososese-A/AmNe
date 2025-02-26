@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/badge_btn.dart';
 import 'package:frontend/add_ons/empty_msg.dart';
 import 'package:frontend/add_ons/main_app_bar.dart';
+import 'package:frontend/add_ons/pin_dot.dart';
 import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/components/currency_badge.dart';
 import 'package:frontend/components/main_card.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/navigatorUtility.dart';
 
 class WalletPage extends StatefulWidget {
   const WalletPage({super.key});
@@ -15,6 +17,15 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
+  bool obscure = false;
+
+  void _hiddenToggle () {
+    setState(() {
+      obscure = !obscure;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,16 +38,18 @@ class _WalletPageState extends State<WalletPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CurrencyBadge(text: "NGN"),
-                Container(
-                  width: 64.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      svg_box(16.0, 16.0, 'assets/icons/filter.svg'),
-                      svg_box(16.0, 16.0, 'assets/icons/obscure.svg'),
-                    ],
-                  ),
-                )
+                GestureDetector(
+                        onTap: _hiddenToggle,
+                        child: obscure 
+
+                        ?
+
+                        svg_box(24.0, 24.0, 'assets/icons/unobscure.svg')
+
+                        :
+
+                        svg_box(24.0, 24.0, 'assets/icons/obscure.svg')
+                      ),
               ],
             ),
             secondLine: Row(
@@ -46,6 +59,28 @@ class _WalletPageState extends State<WalletPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    obscure
+                    ?
+                    Row(
+                      children: [
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                      ],
+                    )
+                    :
                     Text(
                       "0.0000 ETN", 
                       style: TextStyle(
@@ -54,6 +89,22 @@ class _WalletPageState extends State<WalletPage> {
                       ),
                     ),
 
+                    SizedBox(height: 16.0),
+
+                    obscure
+                    ?
+                    Row(
+                      children: [
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                        SizedBox(width: 8,),
+                        pin_dot(active: true,  dotColor: true, height: 12.0, width: 12.0),
+                      ],
+                    )
+                    :
                     Text(
                       "₦0.00",
                       style: TextStyle(
@@ -68,8 +119,8 @@ class _WalletPageState extends State<WalletPage> {
             thirdLine: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                badge_btn("Withdraw"),
-                badge_btn("Fund"),
+                badge_btn("Withdraw", () => next(context, '/withdrawOne')),
+                badge_btn("Fund", () {}),
 
                 GestureDetector(
                   child: Container(

@@ -60,7 +60,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
       });
     }
     _assignPin(cPin);
-    setMainPage(context, "/main");
+    setMainPage(context, "/main", "/main");
   }
 
   void _assignPin (cPin) async {
@@ -165,10 +165,10 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        dot_count >= 1 ? pin_dot(true) : pin_dot(false),
-                        dot_count >= 2 ? pin_dot(true) : pin_dot(false),
-                        dot_count >= 3 ? pin_dot(true) : pin_dot(false),
-                        dot_count == 4 ? pin_dot(true) : pin_dot(false),
+                        dot_count >= 1 ? pin_dot(active:  true) : pin_dot(active:  false),
+                        dot_count >= 2 ? pin_dot(active:  true) : pin_dot(active:  false),
+                        dot_count >= 3 ? pin_dot(active:  true) : pin_dot(active:  false),
+                        dot_count == 4 ? pin_dot(active:  true) : pin_dot(active:  false),
                       ],
                     ),
                   ),

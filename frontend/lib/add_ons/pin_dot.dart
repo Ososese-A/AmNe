@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/themes/theme.dart';
 
-Container pin_dot (bool active) {
+Container pin_dot ({required bool active, double height = 20.0, double width = 20.0, dotColor = false}) {
   return Container(
-    height: 20.0,
-    width: 20.0,
+    height: height,
+    width: width,
     decoration: BoxDecoration(
-      color: active ? customColors.app_light_a : customColors.app_black,
+      color: dotColor ? customColors.app_white : (active ? customColors.app_light_a : customColors.app_black),
       borderRadius: BorderRadius.circular(360.0),
       border: Border.all(
-        color: active ? customColors.app_light_a : customColors.app_light_b
+        color: dotColor ? customColors.app_white : (active ? customColors.app_light_a : customColors.app_light_b)
       )
     ),
   );

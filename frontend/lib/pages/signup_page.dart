@@ -52,7 +52,8 @@ class _SignupPageState extends State<SignupPage> {
 
     try {
       var res = await Dio().post(
-        'http://192.168.31.190:8080/api/signup/',
+        // 'http://192.168.31.190:8080/api/signup/',
+        'http://10.101.76.99:8080/api/signup/',
         data: {
           // "email": enEData,
           // "password": enPData

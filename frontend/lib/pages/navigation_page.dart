@@ -8,7 +8,21 @@ import 'package:frontend/pages/wallet_page.dart';
 import 'package:frontend/themes/theme.dart';
 
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({super.key});
+  static Route route(int pageIndex) {
+    return MaterialPageRoute(
+      builder: (contex) => NavigationPage(pageFromprev: pageIndex),
+      settings: RouteSettings(
+        name: '/main',
+        arguments: pageIndex
+      )
+    );
+  }
+
+  final int pageFromprev;
+  const NavigationPage({
+    super.key,
+    this.pageFromprev = 0
+  });
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
@@ -29,6 +43,13 @@ class _NavigationPageState extends State<NavigationPage> {
     setState(() {
       _selectedPage = index;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _selectedPage = widget.pageFromprev;
   }
 
   @override
