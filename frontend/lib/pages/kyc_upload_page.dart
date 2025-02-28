@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
+import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/components/kyc_upload_field.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/navigatorUtility.dart';
 
 class KycUploadPage extends StatefulWidget {
   const KycUploadPage({super.key});
@@ -33,7 +35,14 @@ final String uploadError  = "";
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                btn("Done", false, () {}),
+                btn("Done", false, () => pop_up(
+                  ctx: context,
+                  txt: 'Your account has been setup successfully',
+                  minor: false,
+                  primaryBtn: true,
+                  primaryBtnTxt: 'Done',
+                  primaryBtnOnTap: () => setMainPage(context, '/main', '/main')
+                )),
               ],
             )
           ],

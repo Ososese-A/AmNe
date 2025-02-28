@@ -11,6 +11,8 @@ class InputField extends StatefulWidget {
   final double errorHeight;
   final TextEditingController controller;
   final bool isItBuy;
+  final bool forgotPassword;
+  final VoidCallback? forgotPasswordAction;
 
   InputField({
     required this.placeholder, 
@@ -21,6 +23,8 @@ class InputField extends StatefulWidget {
     required this.errorHeight,
     required this.controller,
     this.isItBuy = false,
+    this.forgotPassword = false,
+    this.forgotPasswordAction
   });
 
   @override
@@ -50,7 +54,9 @@ class _InputFieldState extends State<InputField> {
             obscure, 
             _toggle,
             widget.controller,
-            widget.isItBuy
+            widget.isItBuy,
+            widget.forgotPassword,
+            widget.forgotPasswordAction
           ),
 
           SizedBox(height: 16.0,),
@@ -80,11 +86,75 @@ Widget _field_selector(
   bool obscure, 
   _toggle,
   TextEditingController controller,
-  bool isItBuy
+  bool isItBuy,
+  bool forgotPassword,
+  VoidCallback? forgotPasswordAction
 ) {
   switch (type) {
     case "password":
-      return Container(
+      return 
+      forgotPassword 
+      ?
+      Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+              height: 66.0,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: customColors.app_white,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child:
+                  Row(
+                      children: [
+                        svg_box(28.0, 28.0, iconPath),
+                        SizedBox(width: 16.0,),
+                        Expanded(
+                          child: TextField(
+                            controller: controller,
+                            obscureText: obscure,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: placeHolder,
+                              hintStyle: TextStyle(color: customColors.app_white),
+                            ),
+                            style: TextStyle(color: customColors.app_white),
+                            cursorColor: customColors.app_light_a,
+                          ),
+                        ),
+                        SizedBox(width: 16.0,),
+                        GestureDetector(
+                          child: obscure
+                            ? svg_box(28.0, 28.0, "assets/icons/obscure.svg")
+                            : svg_box(28.0, 28.0, "assets/icons/unobscure.svg"),
+                          onTap: _toggle,
+                        ),
+                      ],
+                    ),
+            ),
+
+            SizedBox(height: 12.0,),
+
+            GestureDetector(
+              onTap: forgotPasswordAction,
+              child: Text(
+                'Forgot Password',
+                style: TextStyle(
+                  color: customColors.app_white,
+                  fontSize: 16.0
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+      :
+      Container(
         padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         height: 66.0,
         decoration: BoxDecoration(
@@ -94,35 +164,35 @@ Widget _field_selector(
           ),
           borderRadius: BorderRadius.circular(16.0),
         ),
-        child: Center(
-          child: Row(
-            children: [
-              svg_box(28.0, 28.0, iconPath),
-              SizedBox(width: 16.0,),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  obscureText: obscure,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: placeHolder,
-                    hintStyle: TextStyle(color: customColors.app_white),
+        child:
+            Row(
+                children: [
+                  svg_box(28.0, 28.0, iconPath),
+                  SizedBox(width: 16.0,),
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      obscureText: obscure,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: placeHolder,
+                        hintStyle: TextStyle(color: customColors.app_white),
+                      ),
+                      style: TextStyle(color: customColors.app_white),
+                      cursorColor: customColors.app_light_a,
+                    ),
                   ),
-                  style: TextStyle(color: customColors.app_white),
-                  cursorColor: customColors.app_light_a,
-                ),
+                  SizedBox(width: 16.0,),
+                  GestureDetector(
+                    child: obscure
+                      ? svg_box(28.0, 28.0, "assets/icons/obscure.svg")
+                      : svg_box(28.0, 28.0, "assets/icons/unobscure.svg"),
+                    onTap: _toggle,
+                  ),
+                ],
               ),
-              SizedBox(width: 16.0,),
-              GestureDetector(
-                child: obscure
-                  ? svg_box(28.0, 28.0, "assets/icons/obscure.svg")
-                  : svg_box(28.0, 28.0, "assets/icons/unobscure.svg"),
-                onTap: _toggle,
-              ),
-            ],
-          )
-        ),
-      );
+            )
+      ;
     
     case "address":
       return Container(
@@ -146,8 +216,10 @@ Widget _field_selector(
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: placeHolder,
+                    hintMaxLines: 3,
                     hintStyle: TextStyle(color: customColors.app_white),
                   ),
+                  maxLines: 4,
                   style: TextStyle(color: customColors.app_white),
                   cursorColor: customColors.app_light_a,
                 ),

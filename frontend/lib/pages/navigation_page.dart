@@ -49,7 +49,10 @@ class _NavigationPageState extends State<NavigationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _selectedPage = widget.pageFromprev;
+    // _selectedPage = widget.pageFromprev;
+    setState(() {
+      _selectedPage = widget.pageFromprev;
+    });
   }
 
   @override

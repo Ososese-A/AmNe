@@ -24,7 +24,7 @@ AppBar sec_app_bar (BuildContext ctx, String page) {
     actions: [
       Container(
         margin: EdgeInsets.symmetric(horizontal: 16.0),
-        child: CurrencyBadge(text: 'NGN')
+        child: CurrencyBadge()
       )
     ],
   );

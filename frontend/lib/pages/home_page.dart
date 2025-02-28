@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final bool isAccountSetUp = true;
+  final bool isAccountSetUp = false;
   bool obscure = false;
 
   void _hiddenToggle () {

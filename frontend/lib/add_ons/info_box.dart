@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/themes/theme.dart';
 
-GestureDetector info_box (txt) {
+GestureDetector info_box (txt, onTap) {
   return GestureDetector(
+    onTap: onTap,
     child: Container(
       height: 80.0,
       padding: EdgeInsets.symmetric(horizontal: 16.0),

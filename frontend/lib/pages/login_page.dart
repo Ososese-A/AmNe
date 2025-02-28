@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/add_ons/google_btn.dart';
+import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
@@ -178,15 +179,29 @@ class _LoginPageState extends State<LoginPage> {
                 errorHeight: 40.0,
                 controller: emailController,
               ),
+
+              SizedBox(height: 20.0,),
           
               InputField(
                 placeholder: "Password", 
                 iconPath: "assets/icons/password.svg", 
                 type:  "password",
                 error: pErrMsg != "" ? pErrMsg : "",
-                fieldHeight: 220.0,
+                fieldHeight: 240.0,
                 errorHeight: 120.0,
                 controller: passwordController,
+                forgotPassword: true,
+                forgotPasswordAction: () => pop_up(
+                  ctx: context,
+                  txt: 'We sent an email to you inbox please confirm if you have received the email.',
+                  minor: false,
+                  primaryBtn: true,
+                  primaryBtnTxt: 'Confirm',
+                  primaryBtnOnTap: () => next(context, '/forgotPasswordOne'),
+                  secondaryBtn: true,
+                  secondaryBtnTxt: 'Cancel',
+                  secondaryBtnOnTap: () {}
+                ),
               ),
         
               Container(

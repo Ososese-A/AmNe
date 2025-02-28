@@ -90,7 +90,7 @@ class _StockPageState extends State<StockPage> {
                   ),
                 ),
 
-                CurrencyBadge(text: "NGN")
+                CurrencyBadge()
               ],
             ),
 

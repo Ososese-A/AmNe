@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/currencyUtilities.dart';
 
 class CurrencyBadge extends StatefulWidget {
-  final String text;
 
   const CurrencyBadge({
     super.key,
-    required this.text
   });
 
   @override
@@ -16,19 +16,48 @@ class CurrencyBadge extends StatefulWidget {
 class _CurrencyBadgeState extends State<CurrencyBadge> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: customColors.app_dark_a,
-        borderRadius: BorderRadius.circular(8.0)
+    String currency = getCur();
+
+    void _setCurrency () {
+      setState(() {
+        currency = getCur();
+      });
+    }
+
+
+    return GestureDetector(
+      onTap: () => pop_up(
+        ctx: context,
+        txt: 'Which Currency would you like to set as your default fiat currency?',
+        minor: false,
+        exemption: true,
+        primaryBtn: true,
+        primaryBtnTxt: 'NGN',
+        primaryBtnOnTap: () {
+          setCur('NGN');
+          _setCurrency();
+        },
+        secondaryBtn: true,
+        secondaryBtnTxt: 'USD',
+        secondaryBtnOnTap: () {
+          setCur('USD');
+          _setCurrency();
+        }
       ),
-      height: 40.0,
-      width: 72.0,
-      child: Center(
-        child: Text(
-          widget.text,
-          style: TextStyle(
-            color: customColors.app_white,
-            fontSize: 16.0
+      child: Container(
+        decoration: BoxDecoration(
+          color: customColors.app_dark_a,
+          borderRadius: BorderRadius.circular(8.0)
+        ),
+        height: 40.0,
+        width: 72.0,
+        child: Center(
+          child: Text(
+            currency,
+            style: TextStyle(
+              color: customColors.app_white,
+              fontSize: 16.0
+            ),
           ),
         ),
       ),

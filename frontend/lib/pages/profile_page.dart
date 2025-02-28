@@ -93,8 +93,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    badge_btn("Reset pin", () {}),
-                    badge_btn("Reset password", () {}),
+                    badge_btn("Reset pin", () => next(context, '/resetPinOne')),
+                    badge_btn("Reset password", () => next(context, '/resetPasswordOne')),
                   ],
                 ),
               ),
@@ -105,13 +105,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 margin: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
-                    info_box("My Stats"),
+                    info_box("My Stats", () => next(context, '/stats')),
                     SizedBox(height: 40.0,),
-                    info_box("Settings"),
+                    // info_box("Settings", () {}),
+                    // SizedBox(height: 40.0,),
+                    info_box("Get Help", () => next(context, '/gethelp')),
                     SizedBox(height: 40.0,),
-                    info_box("Help"),
-                    SizedBox(height: 40.0,),
-                    info_box("Refer a Friend"),
+                    info_box("Refer a Friend", () => next(context, '/referral')),
                   ],
                 ),
               ),

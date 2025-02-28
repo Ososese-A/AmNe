@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/add_ons/alt_app_bar.dart';
+import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/pin_dot.dart';
 import 'package:frontend/components/key_pad.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/cryptUtility.dart';
-import 'package:frontend/utilities/currencyUtilities.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 
-class PinPage extends StatefulWidget {
-  const PinPage({super.key});
+class ResetPinPageTwo extends StatefulWidget {
+  const ResetPinPageTwo({super.key});
 
   @override
-  State<PinPage> createState() => _PinPageState();
+  State<ResetPinPageTwo> createState() => _ResetPinPageTwoState();
 }
 
-class _PinPageState extends State<PinPage> {
-  int dot_count = 0;
+class _ResetPinPageTwoState extends State<ResetPinPageTwo> {
+    int dot_count = 0;
   String j = "";
   String u = "";
   String pError = "";
@@ -59,15 +58,14 @@ class _PinPageState extends State<PinPage> {
     setState(() {
       dot_count = 0;
     });
-    setCur('NGN');
-    next(context, "/cpin");
+    next(context, "/resetPinThree");
   }
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: alt_app_bar("Pin Setup"),
+      appBar: app_bar(context, 'Reset Pin'),
       backgroundColor: customColors.app_black,
       body: Center(
         child: Column(
@@ -78,7 +76,7 @@ class _PinPageState extends State<PinPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Set a pin to secure your account", style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
+                  Text("Please Enter the new pin you wish to set", style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
                   Container(
                     width: 120.0,
                     child: Row(

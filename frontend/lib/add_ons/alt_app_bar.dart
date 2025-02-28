@@ -4,6 +4,7 @@ import 'package:frontend/themes/theme.dart';
 AppBar alt_app_bar (String page) {
   return AppBar(
     backgroundColor: customColors.app_black,
+    automaticallyImplyLeading: false,
     title: Center(
       child: Text(
         page,

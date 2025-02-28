@@ -80,7 +80,7 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                btn("Next", false, () => next(context, '/kycUpload')),
+                btn("Next", false, () => next(context, '/accountSetupTwo')),
               ],
             )
           ],

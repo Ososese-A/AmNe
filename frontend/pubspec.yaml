@@ -41,6 +41,8 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   curved_navigation_bar: ^1.0.6
+  intl: ^0.20.2
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
@@ -82,6 +84,8 @@ flutter:
     - assets/images/profile_circle_a.png
 
     - assets/icons/back_arrow.svg
+    - assets/icons/up_arrow.svg
+    - assets/icons/down_arrow.svg
     - assets/icons/front_arrow.svg
     - assets/icons/google.svg
     - assets/icons/mail.svg
