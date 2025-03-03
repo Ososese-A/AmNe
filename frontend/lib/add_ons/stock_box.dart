@@ -25,7 +25,7 @@ Container stock_box ({
           Row(
             children: [
               Container(
-                width: 164.0,
+                width: 160.0,
                 height: 54.0,
                 child: 
                   Text(

@@ -13,6 +13,7 @@ class PortfolioPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           children: [
                 SizedBox(height: 24.0,),
 

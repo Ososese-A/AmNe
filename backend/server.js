@@ -6,6 +6,8 @@ const signupRoutes = require('./router/signupRoute')
 const orderRoutes = require('./router/orderRoute')
 const stockRoutes = require('./router/stockRoute')
 const accountRoutes = require('./router/accountRoute')
+const userRoutes = require('./router/userRoute')
+const walletRoutes = require('./router/walletRoute')
 const mongoose = require('mongoose')
 
 const app = express()
@@ -14,11 +16,13 @@ const app = express()
 
 app.use(express.json())
 app.use(loggger)
-app.use('/api/account', accountRoutes)
+app.use('/api/account/', accountRoutes)
 app.use('/api/signup/', signupRoutes)
 app.use('/api/login/', loginRoutes)
+app.use('/api/user/', userRoutes)
 app.use('/api/order/', orderRoutes)
 app.use('/api/stock/', stockRoutes)
+app.use('/api/wallet/', walletRoutes)
 
 
 

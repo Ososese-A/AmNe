@@ -67,40 +67,42 @@ class _PinPageState extends State<PinPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: alt_app_bar("Pin Setup"),
+      appBar: alt_app_bar(page: "Pin Setup"),
       backgroundColor: customColors.app_black,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              height: 160.0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Set a pin to secure your account", style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
-                  Container(
-                    width: 120.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        dot_count >= 1 ? pin_dot(active:  true) : pin_dot(active:  false),
-                        dot_count >= 2 ? pin_dot(active:  true) : pin_dot(active:  false),
-                        dot_count >= 3 ? pin_dot(active:  true) : pin_dot(active:  false),
-                        dot_count == 4 ? pin_dot(active:  true) : pin_dot(active:  false),
-                      ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: 160.0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Set a pin to secure your account", style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
+                    Container(
+                      width: 120.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          dot_count >= 1 ? pin_dot(active:  true) : pin_dot(active:  false),
+                          dot_count >= 2 ? pin_dot(active:  true) : pin_dot(active:  false),
+                          dot_count >= 3 ? pin_dot(active:  true) : pin_dot(active:  false),
+                          dot_count == 4 ? pin_dot(active:  true) : pin_dot(active:  false),
+                        ],
+                      ),
                     ),
-                  ),
-                  Text(pError, style: TextStyle(color: customColors.app_red, fontSize: 16.0),),
-                ],
+                    Text(pError, style: TextStyle(color: customColors.app_red, fontSize: 16.0),),
+                  ],
+                ),
               ),
-            ),
-            KeyPad(
-              set: _setDotCount,
-              reset: _resetDotCount,
-              get: _getDotString,
-            )
-          ],
+              KeyPad(
+                set: _setDotCount,
+                reset: _resetDotCount,
+                get: _getDotString,
+              )
+            ],
+          ),
         ),
       )
     );

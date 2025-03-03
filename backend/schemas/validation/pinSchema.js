@@ -11,7 +11,7 @@ export const pinValidationSchema = {
             errorMessage: "Pin must not be empty"
         },
         isString: {
-            errorMessage: "Pin must be a string"
+            errorMessage: "Pin must be letters of the alphabet"
         }
     }
 }

@@ -8,6 +8,7 @@ CustomColorScheme customColors = CustomColorScheme(
   app_light_b: Color(0xff5BC0BE),
   app_dark_a: Color(0xff1C2541),
   app_dark_b: Color(0xff0B132B),
+  app_dark_transparency: Color.fromARGB(194, 11, 19, 43),
   app_neutral: Color(0xff3A506B),
   app_green: Color(0xff00FF00),
   app_red: Color(0xffFF0000),

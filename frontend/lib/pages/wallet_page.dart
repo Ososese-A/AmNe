@@ -8,7 +8,6 @@ import 'package:frontend/add_ons/open_link.dart';
 import 'package:frontend/add_ons/pin_dot.dart';
 import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/add_ons/svg_box.dart';
-import 'package:frontend/add_ons/toast_simulate.dart';
 import 'package:frontend/components/currency_badge.dart';
 import 'package:frontend/components/main_card.dart';
 import 'package:frontend/components/transaction_box.dart';
@@ -16,7 +15,11 @@ import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 
 class WalletPage extends StatefulWidget {
-  const WalletPage({super.key});
+  final address;
+  const WalletPage({
+    super.key,
+    this.address = 'wallet address'
+  });
 
   @override
   State<WalletPage> createState() => _WalletPageState();
@@ -142,12 +145,12 @@ class _WalletPageState extends State<WalletPage> {
                       secondaryBtn: true,
                       secondaryBtnTxt: "Copy and Deposit",
                       secondaryBtnOnTap: () {
-                        // toast_simulate(context, 'Wallet address copied!');
-                        copy_to_clipboard(context, "User's wallet address");
+                        copy_to_clipboard(context, "User's wallet address", 'Wallet Address Copied!');
                       }
                     )),
           
                     GestureDetector(
+                      onTap: () {copy_to_clipboard(context, widget.address, 'Wallet Address Copied!');},
                       child: Container(
                         child: Row(
                           children: [

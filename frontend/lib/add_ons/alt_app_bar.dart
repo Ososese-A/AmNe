@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/themes/theme.dart';
 
-AppBar alt_app_bar (String page) {
+AppBar alt_app_bar ({required String page, isLoading=false}) {
   return AppBar(
-    backgroundColor: customColors.app_black,
+    backgroundColor: isLoading ? customColors.app_dark_transparency : customColors.app_black,
     automaticallyImplyLeading: false,
     title: Center(
       child: Text(

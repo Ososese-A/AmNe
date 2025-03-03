@@ -3,6 +3,7 @@ import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 
 class AccountSetupPageTwo extends StatefulWidget {
@@ -13,11 +14,33 @@ class AccountSetupPageTwo extends StatefulWidget {
 }
 
 class _AccountSetupPageTwoState extends State<AccountSetupPageTwo> {
-  final securityQuestionErr = '';
-  final TextEditingController securityQuestionController = TextEditingController();
+  String securityQuestionErr = '';
+  TextEditingController securityQuestionController = TextEditingController();
 
-  final securityAnswerErr = '';
-  final TextEditingController securityAnswerController = TextEditingController();
+  String securityAnswerErr = '';
+  TextEditingController securityAnswerController = TextEditingController();
+
+  void _secure () async {
+    String sQData = securityQuestionController.text;
+    String sAData = securityAnswerController.text;
+
+    if (sQData == '' || sAData == '') {
+      setState(() {
+        securityQuestionErr = sQData == '' ? 'Please set a security question' : '';
+        securityAnswerErr = sAData == '' ? 'Please set an answer to your security question' : '';
+      });
+    } else {
+      final backendResponse = await accountSecurityAuth(securityQuestion: sQData, securityAnswer: sAData, type: 'setup');
+      if (backendResponse['isThereError']) {
+        setState(() {
+          securityAnswerErr = backendResponse['securityAnswerErr'];
+          securityQuestionErr = backendResponse['securityQuestionErr'];
+        });
+      } else {
+        nextWithData(context, '/accountSetupThree', {'securityQuestion': sQData});
+      }
+    }
+  }
 
 
   @override
@@ -69,7 +92,7 @@ class _AccountSetupPageTwoState extends State<AccountSetupPageTwo> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                btn("Next", false, () => next(context, '/accountSetupThree')),
+                btn("Next", false, () => _secure()),
               ],
             )
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -10,6 +11,7 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     void _signUp () {
       // print("Sign up");
+      setAS(false);
       Navigator.pushNamed(context, '/signup');
     }
 

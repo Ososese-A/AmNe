@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
-const bcrypt =require("bcrypt");
-const validator = require("validator");
-const { encrypt, decrypt } = require("../../utility/cryptUtility");
+const { accountSchema } = require("./accountSchema");
+const { financialsSchema } = require("./financialsSchema");
+const userStatics = require("../../statics/userStatics");
+const pinStatics = require("../../statics/pinStatics");
+const accountStatics = require("../../statics/accountStatics");
+
 
 const userSchema = new mongoose.Schema({
     email : {
@@ -17,86 +20,33 @@ const userSchema = new mongoose.Schema({
 
     pin : {
         type : mongoose.Schema.Types.String,
-    }
-})
+    },
+
+    accountCredentials : {
+        type: [accountSchema]
+    },
+
+    accountfinancials: {
+        type: [financialsSchema]
+    }, 
+}, {timestamps: true})
 
 
-userSchema.statics.signup = async function (data) {
-    const email = data.email
-    const password = data.password
 
-    // console.log(password)
-    // console.log(decrypt(password))
-    // console.log(encrypt(password))
-    // console.log(email)
-    // console.log(decrypt(email))
-    // console.log(encrypt(email))
-    
+userSchema.statics.signup = userStatics.signup
 
-    if (!email || !password) {
-        throw Error("All fields must be filled")
-    }
+userSchema.statics.login = userStatics.login
 
-    if (!validator.isEmail(email)) {
-        throw Error('Email is not valid')
-    }
+userSchema.statics.assignPin = pinStatics.assignPin
 
-    const exists = await this.findOne({email});
+userSchema.statics.confirmPin = pinStatics.confirmPin
 
-    if (exists) {
-        throw Error('Email already in use')
-    }
+userSchema.statics.setUpAccount = accountStatics.setUpAccount
 
-    const salt = await bcrypt.genSalt(8);
-    const hash = await bcrypt.hash(password, salt)
+userSchema.statics.secureAccount = accountStatics.secureAccount
 
-    const user = await this.create({email, password: hash})
-    return user
-}
+userSchema.statics.confirmSecure = accountStatics.confirmSecure
 
-userSchema.statics.login = async function (data) {
-    const email = data.email
-    const password = data.password
-
-    if (!email || !password) {
-        throw Error("All fields must be filled")
-    }
-
-    if (!validator.isEmail(email)) {
-        throw Error(JSON.stringify({eError: 'Email is not valid'}))
-    }
-
-    const user = await this.findOne({email});
-
-    if (!user) {
-        throw Error(JSON.stringify({eError: 'Incorrect email'}))
-    }
-
-    const match = await bcrypt.compare(password, user.password)
-
-    if (!match) {
-        throw Error(JSON.stringify({pError: 'Incorrect Password'}))
-    }
-
-    return user
-}
-
-userSchema.statics.assignPin = async function (data) {
-    const pin = data.pin
-    const id = data.id
-
-    if (!pin) {
-        throw Error("Pin cannot be empty")
-    }
-
-    const user = await this.findOneAndUpdate({id}, {pin}, {new: true})
-
-    if (!user) {
-        throw Error("Incorrect Pin")
-    }
-
-    return user
-}
 
 
 module.exports = mongoose.model('User', userSchema)

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../schemas/mongoose/userSchema')
 
 const auth = async (req, res, next) => {
+    console.log(req.file)
 
     //verify authentication 
     const { authorization } = req.headers 

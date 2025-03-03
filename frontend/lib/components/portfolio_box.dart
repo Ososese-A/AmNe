@@ -14,7 +14,7 @@ class PortfolioBox extends StatelessWidget {
     this.count = 1
   });
 
-  final isPortfolioEmpty = false;
+  final isPortfolioEmpty = true;
 
   final List _stocks = [
     {
@@ -70,62 +70,64 @@ class PortfolioBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        isPortfolioEmpty 
-        
-        ? 
-        
-        Container
-        (
-          margin: EdgeInsets.symmetric(vertical: 32.0),
-          child: empty_msg("assets/images/empty_portfolio_a.svg", "You currently have no stocks in your portfolio")
-        )
-        
-        :
-        
-        Expanded(
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
-            ), 
-            // itemCount: 4,
-            itemCount: customize ? count : _stocks.length,
-            itemBuilder: (context, index) {
-            return ((index + 1) % 2 == 0 && (index + 1) % 4 == 0 ) || ((index + 1) % 2 == 1 && (index + 1) % 4 == 1 )
-            ?
-            GestureDetector(
-              onTap: () => nextWithData(context, '/stockInfo', _stocks[index]['symbol']),
-              child: stock_box(
-                name: _stocks[index]['name'],
-                symbol: _stocks[index]['symbol'],
-                price: _stocks[index]['price'],
-                percent: _stocks[index]['percent'],
-                change: _stocks[index]['change'],
-                positive: double.parse(_stocks[index]['percent']) > 0,
-                backgroundColor: customColors.app_dark_b
-              ),
-            )
-        
-            :
-        
-            GestureDetector(
-              onTap: () => nextWithData(context, '/stockInfo', _stocks[index]['symbol']),
-              child: stock_box(
-                name: _stocks[index]['name'],
-                symbol: _stocks[index]['symbol'],
-                price: _stocks[index]['price'],
-                percent: _stocks[index]['percent'],
-                change: _stocks[index]['change'],
-                positive: double.parse(_stocks[index]['percent']) > 0,
-              ),
-            );
-          },
+    return Expanded(
+      child: Column(
+        children: [
+          isPortfolioEmpty 
+          
+          ? 
+          
+          Container
+          (
+            margin: EdgeInsets.symmetric(vertical: 32.0),
+            child: empty_msg("assets/images/empty_portfolio_a.svg", "You currently have no stocks in your portfolio")
+          )
+          
+          :
+          
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+              ), 
+              // itemCount: 4,
+              itemCount: customize ? count : _stocks.length,
+              itemBuilder: (context, index) {
+              return ((index + 1) % 2 == 0 && (index + 1) % 4 == 0 ) || ((index + 1) % 2 == 1 && (index + 1) % 4 == 1 )
+              ?
+              GestureDetector(
+                onTap: () => nextWithData(context, '/stockInfo', _stocks[index]['symbol']),
+                child: stock_box(
+                  name: _stocks[index]['name'],
+                  symbol: _stocks[index]['symbol'],
+                  price: _stocks[index]['price'],
+                  percent: _stocks[index]['percent'],
+                  change: _stocks[index]['change'],
+                  positive: double.parse(_stocks[index]['percent']) > 0,
+                  backgroundColor: customColors.app_dark_b
+                ),
+              )
+          
+              :
+          
+              GestureDetector(
+                onTap: () => nextWithData(context, '/stockInfo', _stocks[index]['symbol']),
+                child: stock_box(
+                  name: _stocks[index]['name'],
+                  symbol: _stocks[index]['symbol'],
+                  price: _stocks[index]['price'],
+                  percent: _stocks[index]['percent'],
+                  change: _stocks[index]['change'],
+                  positive: double.parse(_stocks[index]['percent']) > 0,
+                ),
+              );
+            },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

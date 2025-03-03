@@ -3,7 +3,9 @@ import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+
 
 class AccountSetupPage extends StatefulWidget {
   const AccountSetupPage({super.key});
@@ -13,17 +15,56 @@ class AccountSetupPage extends StatefulWidget {
 }
 
 class _AccountSetupPageState extends State<AccountSetupPage> {
-  final String lnameErr = "";
-  final TextEditingController lnameController = TextEditingController();
+  String lnameErr = "";
+  TextEditingController lnameController = TextEditingController();
 
-  final String fnameErr = "";
-  final TextEditingController fnameController = TextEditingController();
+  String fnameErr = "";
+  TextEditingController fnameController = TextEditingController();
 
-  final String phoneErr = "";
-  final TextEditingController phoneController = TextEditingController();
+  String phoneErr = "";
+  TextEditingController phoneController = TextEditingController();
 
-  final String addressErr = "";
-  final TextEditingController addressController = TextEditingController();
+  String addressErr = "";
+  TextEditingController addressController = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    lnameController.dispose();
+    fnameController.dispose();
+    phoneController.dispose();
+    addressController.dispose();
+    super.dispose();
+  }
+
+  void _setUp () async {
+    String lData = lnameController.text;
+    String fData = fnameController.text;
+    String mData = phoneController.text;
+    String aData = addressController.text;
+
+    if (lData == '' || fData == '' || mData == '' || aData == ''){
+      setState(() {
+        fnameErr = fData == '' ? 'Please enter your first name' : '';
+        lnameErr = lData == '' ? 'Please enter your last name' : '';
+        phoneErr = mData == '' ? 'Please enter your mobile number' : '';
+        addressErr = aData == '' ? 'Please enter your address' : '';
+      });
+    } else {
+      final backendResponse = await accountAuth(firstName: fData, lastName: lData, mobile: mData, address: aData, type: 'setup');
+      if  (backendResponse['isThereError']) {
+        setState(() {
+          fnameErr = backendResponse['fnameErr'];
+          lnameErr = backendResponse['lnameErr'];
+          phoneErr = backendResponse['phoneErr'];
+          addressErr = backendResponse['addressErr'];
+        });
+      } else {
+        setMainPage(context, '/accountSetupTwo', '/accountSetupTwo');
+      }
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +121,7 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                btn("Next", false, () => next(context, '/accountSetupTwo')),
+                btn("Next", false, () => _setUp()),
               ],
             )
           ],

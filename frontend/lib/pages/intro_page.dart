@@ -3,6 +3,7 @@ import 'package:frontend/components/intro_slide_1.dart';
 import 'package:frontend/components/intro_slide_2.dart';
 import 'package:frontend/components/intro_slide_3.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class IntroPage extends StatefulWidget {
@@ -12,12 +13,24 @@ class IntroPage extends StatefulWidget {
   State<IntroPage> createState() => _IntroPageState();
 }
 
+void meme () async {
+  //check if the account is set up or not and set the account check variable
+  await getAccount(type: 'confirmSetup');
+}
+
 class _IntroPageState extends State<IntroPage> {
   //controller to keep track of the pages 
   PageController _controller = PageController();
 
   //checker to see of the current page is the last page or not
   bool onLastPage = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    meme();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +96,12 @@ class _IntroPageState extends State<IntroPage> {
                       ),
                     ),
                     onTap: () {
-                      Navigator.pushNamed(context, '/auth');
+                      bool isExpired = getExpiryDate();
+                      if (isExpired) {
+                        Navigator.pushNamed(context, '/auth');
+                      } else {
+                        Navigator.pushNamed(context, '/epin');
+                      }
                     },
                   ) 
                 : GestureDetector(

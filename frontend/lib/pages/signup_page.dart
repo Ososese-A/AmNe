@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
@@ -8,7 +5,6 @@ import 'package:frontend/add_ons/google_btn.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
-import 'package:frontend/utilities/cryptUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 
 class SignupPage extends StatefulWidget {
@@ -34,107 +30,24 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void _signup () async {
-    final String eData = emailController.text;
-    final String pData = passwordController.text;
-    print('Pre encryption Email: ${eData}');
-    print('Pre encryption Password: ${pData}');
+    String eData = emailController.text;
+    String pData = passwordController.text;
 
-    final String enPData = encrypt(pData);
-    final String enEData = encrypt(eData);
-
-    final String deEData =  decrypt(enEData);
-    final String dePData =  decrypt(enPData);
-    print('Post encryption Email: ${enEData}');
-    print('Post encryption decrypted Email: ${deEData}');
-    print('Post encryption Password: ${enPData}');
-    print('Post encryption decrypted Password: ${dePData}');
-
-
-    try {
-      var res = await Dio().post(
-        // 'http://192.168.31.190:8080/api/signup/',
-        'http://10.101.76.99:8080/api/signup/',
-        data: {
-          // "email": enEData,
-          // "password": enPData
-          "email": enEData,
-          "password": enPData
-        }
-      );
-
-      String response = res.toString();
-      print('Response: $response');
-      final result = jsonDecode(response);
-      // print('Response: ${result['id']}');
-      // print('Response: ${result['token']}');
-      final _uId = result['id'];
-      final _jId = result['token'];
-      print('User: ${_uId}');
-      print('Json: ${_jId}');
-
+    if (eData == '' || pData == '') {
       setState(() {
-        eErrMsg = "";
-        pErrMsg = "";
+        eErrMsg = eData == '' ? 'Please enter your email address' : '';
+        pErrMsg = pData == '' ? 'Please set a password' : '';
       });
-
-      if (result['id'] != null) {
-        setU(_uId);
-        setJ(_jId);
-        print('The setup works');
-        nextPage(context, '/pin');
-      }
-    } on DioException catch (e) {
-      print('Error: ${e.response?.data}');
-
-      if (e.response?.data != null && e.response?.data['error'] != null) {
-        print(e.response?.data['error']);
+    }  else {
+      final backendResponse = await authenticate(eData: eData, pData: pData, ctx: context, type: 'signup');
+      print(backendResponse);
+      if (backendResponse['isThereError']) {
         setState(() {
-          eErrMsg = e.response?.data['error'];
+          eErrMsg = backendResponse['eErrMsg'];
+          pErrMsg = backendResponse['pErrMsg'];
         });
       } else {
-        final errorMsg = e.response?.data;
-
-          List <String> emailErrors = [];
-          List <String> passwordErrors = [];
-
-          for (var error in errorMsg['errorMsg']) {
-            if (error['path'] == 'email') {
-              emailErrors.add(error['msg']);
-            } else if (error['path'] == 'password') {
-              passwordErrors.add(error['msg']);
-            }
-          }
-
-          if (emailErrors != [] && passwordErrors == []) {
-              String emailErrorDisplay = emailErrors.join('\n');
-              print('Email Error: $emailErrorDisplay');
-              setState(() {
-                eErrMsg = emailErrorDisplay;
-                pErrMsg = "";
-              });
-          } else if (emailErrors == [] && passwordErrors != []) {
-              String passwordErrorDisplay = passwordErrors.join('\n');
-              print('Password Error: $passwordErrorDisplay');
-              setState(() {
-                pErrMsg = passwordErrorDisplay;
-                eErrMsg = "";
-              });
-          } else if (emailErrors != [] && passwordErrors != []) {
-              String emailErrorDisplay = emailErrors.join('\n');
-              String passwordErrorDisplay = passwordErrors.join('\n');
-              print('Email Error: $emailErrorDisplay');
-              print('Password Error: $passwordErrorDisplay');
-              setState(() {
-                  eErrMsg = emailErrorDisplay;
-                  pErrMsg = passwordErrorDisplay;
-                });
-          } else {
-              final defaultError = "An Unknown Error Occured, Please try again";
-              setState(() {
-                eErrMsg = defaultError;
-                pErrMsg = "";
-              });
-          }
+        setMainPage(context, '/pin', '/pin');
       }
     }
   }

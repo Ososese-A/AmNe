@@ -64,7 +64,7 @@ class _ResetPinPageThreeState extends State<ResetPinPageThree> {
       minor: false,
       primaryBtn: true,
       primaryBtnTxt: 'Done',
-      primaryBtnOnTap: () => setMainPageWithData(context, '/main', '/main', 2),
+      primaryBtnOnTap: () => setMainAsMainPageWithData(context, 3),
     );
   }
 
@@ -72,7 +72,7 @@ class _ResetPinPageThreeState extends State<ResetPinPageThree> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: alt_app_bar('Confirm New Pin'),
+      appBar: alt_app_bar(page: 'Confirm New Pin'),
       backgroundColor: customColors.app_black,
       body: Center(
         child: Column(

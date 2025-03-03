@@ -28,12 +28,13 @@ const login = async (req, res) => {
 
     try {
         const user = await User.login(data)
-        
+        const tokenExpires = '3d'
+
         //for jwt create the token here then sent it to the user as json alsong with the user id
-        const token = createToken(user._id)
-        
+        const token = createToken(user._id, tokenExpires)
         // res.sendStatus(200)
-        res.status(200).json({id: user._id, token})
+        console.log({id: user._id, token, tokenExpires})
+        res.status(200).json({id: user._id, token, tokenExpires})
     } catch (error) {
         console.log(error.message)
         res.status(400).json({error: error.message})

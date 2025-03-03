@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/themes/theme.dart';
-import 'package:intl/intl.dart';
 
 Container transaction_record (String currency, amount, participant, time) {
   return Container(
@@ -38,7 +38,7 @@ Container transaction_record (String currency, amount, participant, time) {
         ),
 
         Text(
-          '${NumberFormat('#,##0.00').format(double.parse(amount))} $currency',
+          '${value_to_delimal(value: double.parse(amount), type: false)} $currency',
           style: 
           double.parse(amount) > 0 
           ?

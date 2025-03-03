@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
+import 'package:frontend/add_ons/copy_to_clipboard.dart';
 import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/themes/theme.dart';
 
@@ -8,6 +9,8 @@ class ContactUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String email = 'contact.amne@gmail.com';
+
     return Scaffold(
       backgroundColor: customColors.app_black,
       appBar: app_bar(context, 'Contact Us'),
@@ -43,7 +46,7 @@ class ContactUsPage extends StatelessWidget {
                       ),
                       SizedBox(width: 32.0,),
                       Text(
-                        'contact.amne@gmail.com',
+                        email,
                         style: TextStyle(
                           color: customColors.app_white,
                           fontSize: 16.0
@@ -58,22 +61,25 @@ class ContactUsPage extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            "Copy Email",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: customColors.app_white,
-                              fontSize: 16.0
+                      child: GestureDetector(
+                        onTap: () => copy_to_clipboard(context, email, 'Email copied!'),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Copy Email",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: customColors.app_white,
+                                fontSize: 16.0
+                              ),
                             ),
-                          ),
-        
-                          SizedBox(width: 8.0,),
-        
-                          svg_box(24.0, 24.0, "assets/icons/copy.svg")
-                        ],
+                                
+                            SizedBox(width: 8.0,),
+                                
+                            svg_box(24.0, 24.0, "assets/icons/copy.svg")
+                          ],
+                        ),
                       ),
                     ),
                   )

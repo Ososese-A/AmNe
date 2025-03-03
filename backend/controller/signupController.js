@@ -28,10 +28,13 @@ const signup = async (req, res) => {
 
     try {
         const user = await User.signup(data)
+        const tokenExpires = '3d'
 
-        const token = createToken(user._id)
+        console.log(`This is the id post token creation ${user._id}`)
+
+        const token = createToken(user._id, tokenExpires)
         // res.sendStatus(200)
-        res.status(201).json({id: user._id, token})
+        res.status(201).json({id: user._id, token, tokenExpires})
     } catch (error) {
         console.log(error.message)
         res.status(400).json({error: error.message})

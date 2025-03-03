@@ -71,7 +71,7 @@ class _ResetPasswordPageThreeState extends State<ResetPasswordPageThree> {
                     minor: false,
                     primaryBtn: true,
                     primaryBtnTxt: 'Done',
-                    primaryBtnOnTap: () => setMainPageWithData(context, '/main', '/main', 2),
+                    primaryBtnOnTap: () => setMainAsMainPageWithData(context, 3),
                   )
                 ),
               ],

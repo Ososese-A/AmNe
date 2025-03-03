@@ -11,7 +11,6 @@ import 'package:frontend/pages/faq_page.dart';
 import 'package:frontend/pages/forgot_password_page_one.dart';
 import 'package:frontend/pages/forgot_password_page_two.dart';
 import 'package:frontend/pages/get_help_page.dart';
-import 'package:frontend/pages/home_page.dart';
 import 'package:frontend/pages/intro_page.dart';
 import 'package:frontend/pages/kyc_upload_page.dart';
 import 'package:frontend/pages/login_page.dart';
@@ -37,7 +36,6 @@ import 'package:frontend/pages/stock_page.dart';
 import 'package:frontend/pages/transaction_detail_page.dart';
 import 'package:frontend/pages/transaction_history_page.dart';
 import 'package:frontend/pages/transaction_view_page.dart';
-import 'package:frontend/pages/wallet_page.dart';
 import 'package:frontend/pages/withdraw_page_one.dart';
 import 'package:frontend/pages/withdraw_page_two.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -56,19 +54,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userHasPin = true;
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: 'Comfortaa'),
       // home: NavigationPage(),
-      // home: HomePage(),
       // home: IntroPage(),
+      // home: LoginPage(),
+      // home: KycUploadPage(),
+      // home: SignupPage(),
+      home: AuthPage(),
       // home: PinPage(),
       // home: BuyStockPage(),
       // home: StockInfoPage(),
       // initialRoute: '/main',
-      initialRoute: userHasPin ? '/pin' : '/pin',  //if user has a pin initroute is /epin but if user has no pin then initroute is /pin
+      // initialRoute: '/intro',
       routes: {
         '/intro' : (context) => IntroPage(),
         '/auth': (context) => AuthPage(),
@@ -80,7 +80,6 @@ class MyApp extends StatelessWidget {
         '/cpin': (context) => ConfirmPinPage(),
         '/epin': (context) => EnterPinPage(),
         '/main' : (context) => NavigationPage(),
-        '/home' : (context) => HomePage(),
         '/portfolio' : (context) => PortfolioPage(),
         '/profile': (context) => ProfilePage(),
         '/stock': (context) => StockPage(),
@@ -89,7 +88,6 @@ class MyApp extends StatelessWidget {
         '/sell': (context) => SellStockPage(),
         '/orderDetails': (context) => OrderDetailPage(),
         '/orderConfirmed': (context) => OrderConfirmPage(),
-        '/wallet': (context) => WalletPage(),
         '/history': (context) => TransactionHistoryPage(),
         '/viewTransaction': (context) => TransactionViewPage(),
         '/withdrawOne': (context) => WithdrawPageOne(),

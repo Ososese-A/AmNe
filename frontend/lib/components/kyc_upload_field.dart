@@ -3,14 +3,19 @@ import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/themes/theme.dart';
 
 class KycUploadField extends StatefulWidget {
-  const KycUploadField({super.key});
+  final bool upload;
+
+  const KycUploadField({
+    super.key,
+    required this.upload,
+  });
 
   @override
   State<KycUploadField> createState() => _KycUploadFieldState();
 }
 
 class _KycUploadFieldState extends State<KycUploadField> {
-  final bool uploaded = false;
+  // final bool uploaded = widget.upload;
 
 
   @override
@@ -26,7 +31,7 @@ class _KycUploadFieldState extends State<KycUploadField> {
         ),
         borderRadius: BorderRadius.circular(16.0),
       ),
-        child: uploaded
+        child: widget.upload
 
         ?
 

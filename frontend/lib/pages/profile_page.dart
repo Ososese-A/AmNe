@@ -23,7 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: main_app_bar(context),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -102,7 +102,6 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 40.0,),
           
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
                     info_box("My Stats", () => next(context, '/stats')),

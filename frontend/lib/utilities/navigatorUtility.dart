@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/navigation_page.dart';
 
 void nextPage (BuildContext ctx, String route) {
     Navigator.popAndPushNamed(ctx, route);
@@ -24,12 +25,28 @@ void setMainPage(BuildContext ctx, String route, String singleRouteToKeep) {
   );
 }
 
-void setMainPageWithData(BuildContext ctx, String route, String singleRouteToKeep, data) {
+// void setMainPageWithData(BuildContext ctx, String route, String singleRouteToKeep, data) {
+//   Navigator.pushNamedAndRemoveUntil(
+//     ctx,
+//     route,
+//     arguments: data,
+//     ModalRoute.withName(singleRouteToKeep),
+//   );
+// }
+
+void setMainPageWithData(BuildContext ctx, String route, String singleRouteToKeep, dynamic data) {
   Navigator.pushNamedAndRemoveUntil(
     ctx,
     route,
-    arguments: data,
-    ModalRoute.withName(singleRouteToKeep),
+    (route) => route.settings.name == singleRouteToKeep,
+    arguments: data, 
+  );
+}
+
+void setMainAsMainPageWithData(BuildContext ctx, int data) {
+  Navigator.of(ctx).pushAndRemoveUntil(
+    NavigationPage.route(data),
+    ModalRoute.withName('/main')
   );
 }
 
