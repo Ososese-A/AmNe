@@ -98,22 +98,22 @@ class _SignupPageState extends State<SignupPage> {
         
               SizedBox(height: 120.0),
         
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Or Sign Up with:",
-                    style: TextStyle(
-                      color: customColors.app_white,
-                      fontSize: 20.0
-                    ),
-                  ),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Text(
+              //       "Or Sign Up with:",
+              //       style: TextStyle(
+              //         color: customColors.app_white,
+              //         fontSize: 20.0
+              //       ),
+              //     ),
         
-                  SizedBox(height: 28.0,),
+              //     SizedBox(height: 28.0,),
         
-                  google_btn(() {})
-                ],
-              )
+              //     google_btn(() {})
+              //   ],
+              // )
             ],
           ),
         ),

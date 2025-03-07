@@ -8,17 +8,19 @@ import 'package:frontend/add_ons/open_link.dart';
 import 'package:frontend/add_ons/pin_dot.dart';
 import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/add_ons/svg_box.dart';
+import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/components/currency_badge.dart';
 import 'package:frontend/components/main_card.dart';
 import 'package:frontend/components/transaction_box.dart';
+import 'package:frontend/model/accountModel.dart';
+import 'package:frontend/notifiers/currency_notifier.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+import 'package:provider/provider.dart';
 
 class WalletPage extends StatefulWidget {
-  final address;
   const WalletPage({
     super.key,
-    this.address = 'wallet address'
   });
 
   @override
@@ -38,6 +40,8 @@ class _WalletPageState extends State<WalletPage> {
 
   @override
   Widget build(BuildContext context) {
+    final wallet = Provider.of<Walletmodel>(context);
+    final currency = Provider.of<CurrencyNotifier>(context).currency;
 
     return Scaffold(
       backgroundColor: customColors.app_black,
@@ -95,7 +99,7 @@ class _WalletPageState extends State<WalletPage> {
                         )
                         :
                         Text(
-                          "0.0000 ETN", 
+                          "${value_to_delimal(value: wallet.balance, type: true)} ETN", 
                           style: TextStyle(
                             color: customColors.app_white, 
                             fontSize: 24.0
@@ -119,7 +123,11 @@ class _WalletPageState extends State<WalletPage> {
                         )
                         :
                         Text(
-                          "₦0.00",
+                          currency == "USD"
+                          ?
+                          "\$${value_to_delimal(value: wallet.balanceInDollars, type: false)}"
+                          :
+                          "₦${value_to_delimal(value: wallet.balanceInNaira, type: false)}",
                           style: TextStyle(
                             fontSize: 16.0, 
                             color:  customColors.app_white
@@ -135,7 +143,7 @@ class _WalletPageState extends State<WalletPage> {
                     badge_btn("Withdraw", () => next(context, '/withdrawOne')),
                     badge_btn("Fund", () => pop_up(
                       ctx:  context,
-                      txt: "'To Fund your account copy your wallet address and; \n\nDeposit Electroneum (ETN) from a different wallet \n\nOR \n\nBuy some from our recommended market place'",
+                      txt: "To Fund your account copy your wallet address and; \n\nDeposit Electroneum (ETN) from a different wallet \n\nOR \n\nBuy some from our recommended market place",
                       minor: false,
                       primaryBtn: true,
                       primaryBtnTxt: "Go To Marketplace",
@@ -145,12 +153,12 @@ class _WalletPageState extends State<WalletPage> {
                       secondaryBtn: true,
                       secondaryBtnTxt: "Copy and Deposit",
                       secondaryBtnOnTap: () {
-                        copy_to_clipboard(context, "User's wallet address", 'Wallet Address Copied!');
+                        copy_to_clipboard(context, wallet.address, 'Wallet Address Copied!');
                       }
                     )),
           
                     GestureDetector(
-                      onTap: () {copy_to_clipboard(context, widget.address, 'Wallet Address Copied!');},
+                      onTap: () {copy_to_clipboard(context, wallet.address, 'Wallet Address Copied!');},
                       child: Container(
                         child: Row(
                           children: [

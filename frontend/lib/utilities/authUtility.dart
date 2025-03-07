@@ -8,6 +8,9 @@ import 'package:hive/hive.dart';
 
 final _con = Hive.box('dis');
 
+// final _url = "http://192.168.31.190:4000";
+final _url = "https://amne.onrender.com";
+
 String getU () {
   final u = _con.get(1);
   return u;
@@ -95,11 +98,9 @@ Future<Map<String, dynamic>> authenticate ({ required eData, required pData, req
       var res = await Dio().post(
         authResponse['authType'] == 'login' 
         ?
-        'http://192.168.31.190:8080/api/login/'
-        // 'http://10.101.76.99:8080/api/login/',
+        '${_url}/api/login/'
         :
-        'http://192.168.31.190:8080/api/signup/',
-        // 'http://10.101.76.99:8080/api/signup/',
+        '${_url}/api/signup/',
         data: {
           "email": enEData,
           "password": enPData
@@ -227,9 +228,11 @@ Future<Map<String, dynamic>> dotsAuth ({required dotString, required ctx, requir
       var res = await Dio().post(
         dotResponse['type'] == 'setDots'
         ?
-        'http://192.168.31.190:8080/api/signup/assignPin'
+        '${_url}/api/signup/assignPin'
+        // 'http://10.73.2.209:8080/api/signup/assignPin'
         :
-        'http://192.168.31.190:8080/api/login/confirmPin',
+        '${_url}/api/login/confirmPin',
+        // 'http://10.73.2.209:8080/api/login/confirmPin',
         data: {
           "pin": dotString,
           "id": u
@@ -324,7 +327,8 @@ Future<Map<String, dynamic>> accountAuth ({required firstName, required lastName
   try {
     print('This is the user $u');
     var res = await Dio().post(
-      'http://192.168.31.190:8080/api/user/',
+      '${_url}/api/user/',
+      // 'http://10.73.2.209:8080/api/user/',
         data: {
           'firstName': firstName,
           'lastName': lastName,
@@ -473,7 +477,8 @@ Future<Map<String, dynamic>> accountSecurityAuth ({required securityQuestion, re
 
     try {
       var res = await Dio().post(
-        'http://192.168.31.190:8080/api/user/secure',
+        '${_url}/api/user/secure',
+        // 'http://10.73.2.209:8080/api/user/secure',
         data: {
           "securityQuestion": encrypt(securityQuestion),
           "securityAnswer": encrypt(securityAnswer),
@@ -566,7 +571,8 @@ Future<Map<String, dynamic>> getAccount ({required type}) async {
 
     try {
       var res = await Dio().get(
-        'http://192.168.31.190:8080/api/user/',
+        '${_url}/api/user/',
+        // 'http://10.73.2.209:8080/api/user/',
         options: Options(
         headers: {
           'Content-Type': 'application/json',
@@ -658,7 +664,8 @@ Future<Map<String, dynamic>> confirmAccountSecurityAuth ({required securityQuest
 
     try {
       var res = await Dio().post(
-        'http://192.168.31.190:8080/api/user/confirmSecure',
+        '${_url}/api/user/confirmSecure',
+        // 'http://10.73.2.209:8080/api/user/confirmSecure',
         data: {
           "securityQuestion": encrypt(securityQuestion),
           "securityAnswer": encrypt(securityAnswer),
@@ -746,7 +753,8 @@ Future<Map<String, dynamic>> kycUpload ({required type, required FormData formDa
 
     try {
       var res = await Dio().post(
-        'http://192.168.31.190:8080/api/user/uploadImage',
+        '${_url}/api/user/uploadImage',
+        // 'http://10.73.2.209:8080/api/user/uploadImage',
         data: formData,
         options: Options(
         headers: {
@@ -806,7 +814,8 @@ Future<Map<String, dynamic>> getWallet ({required type}) async {
 
     try {
       var res = await Dio().get(
-        'http://192.168.31.190:8080/api/wallet/financials',
+        '${_url}/api/wallet/financials',
+        // 'http://10.73.2.209:8080/api/wallet/financials',
         options: Options(
         headers: {
           'Content-Type': 'application/json',
@@ -821,16 +830,292 @@ Future<Map<String, dynamic>> getWallet ({required type}) async {
       print('Response prima: $response');
       final result = jsonDecode(response);
 
-      if (result['_id'] != null) {
+      if (result['financialsinfo']['_id'] != null) {
         print('The setup works');
+        result['isAccountSetUp'] = true;
         authResponse['isThereError'] = false;
         result['isThereError'] = authResponse['isThereError'];
+        result['balance'] = double.parse(result['financialsinfo']['wallet'][0]['balance']);
+        result['address'] = result['financialsinfo']['wallet'][0]['address'];
+        print("result['rate'].runtimeType");
+        print(result['rate'].runtimeType);
+        result['rate'] = result['rate'];
+        result['etnValue'] = result['etnValue'];
         return result;
       } else {
         authResponse['error'] = defaultError;
         return authResponse;
       }
 
+    } on DioException catch (e) {
+      print(e);
+      print('Error: ${e.response?.data}');
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        if (e.response?.data['error'] == 'Request is not authorized') {
+          authResponse['error'] = 'Account does not exist';
+          return authResponse;
+        } else if (e.response?.data['error'] == 'Account not setup') {
+          authResponse['isAccountSetUp'] = false;
+          authResponse['isThereError'] = false;
+          return authResponse;
+        } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+        }
+      } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+      }
+    }
+}
+
+
+
+
+Future<Map<String, dynamic>> checkWallet ({required String wallet}) async {
+  Map<String, dynamic> authResponse = {};
+  authResponse['isThereError'] = true;
+
+  final defaultError = "An Unknown Error Occured, Please try again";
+
+  String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
+    try {
+      var res = await Dio().post(
+        '${_url}/api/wallet/checkWallet',
+        // 'http://10.73.2.209:8080/api/wallet/checkWallet',
+        data: {
+          'address': wallet
+        },
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
+      );
+      
+
+      String response = res.toString();
+      print('Response prima: $response');
+      final result = jsonDecode(response);
+
+      if (result['msg'] != null) {
+        print("The message from check validity: ${result['msg']}");
+        result['isThereError'] = false;
+        return result;
+      } else {
+        authResponse['error'] = defaultError;
+        return authResponse;
+      }
+
+    } on DioException catch (e) {
+      print("Print from e");
+      // print(e);
+      print('Error: from e.response');
+      print('Error: ${e.response?.data}');
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        if (e.response?.data['error'] == 'Request is not authorized') {
+          authResponse['error'] = 'Account does not exist';
+          return authResponse;
+        } else if (e.response?.data['error'] != null && e.response?.data['error'] != '') {
+          authResponse['error'] = e.response?.data['error'];
+          return authResponse;
+        } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+        }
+      } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+      }
+    }
+}
+
+
+
+
+Future<Map<String, dynamic>> checkGasFee ({required String wallet, required String sender, required String amount}) async {
+  Map<String, dynamic> authResponse = {};
+  authResponse['isThereError'] = true;
+
+  final defaultError = "An Unknown Error Occured, Please try again";
+
+  String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
+    try {
+      var res = await Dio().post(
+        '${_url}/api/wallet/checkGasFee',
+        // 'http://10.73.2.209:8080/api/wallet/checkGasFee',
+        data: {
+          'address': wallet,
+          'sender': sender,
+          'amount': amount
+        },
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
+      );
+      
+
+      String response = res.toString();
+      print('Response prima: $response');
+      final result = jsonDecode(response);
+
+      if (result["gasFee"] != null) {
+        result['isThereError'] = false;
+        print("Priting of gasfee result: ${result}");
+        return result;
+      } else {
+        authResponse['error'] = defaultError;
+        return authResponse;
+      }
+
+    } on DioException catch (e) {
+      print("Print from e");
+      // print(e);
+      print('Error: from e.response');
+      print('Error: ${e.response?.data}');
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        if (e.response?.data['error'] == 'Request is not authorized') {
+          authResponse['error'] = 'Account does not exist';
+          return authResponse;
+        } else if (e.response?.data['error'] != null && e.response?.data['error'] != '') {
+          authResponse['error'] = e.response?.data['error'];
+          return authResponse;
+        } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+        }
+      } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+      }
+    }
+}
+
+
+
+
+Future<Map<String, dynamic>> withdrawal ({required String wallet, required String sender, required String amount}) async {
+  Map<String, dynamic> authResponse = {};
+  authResponse['isThereError'] = true;
+
+  final defaultError = "An Unknown Error Occured, Please try again";
+
+  String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
+    try {
+      var res = await Dio().post(
+        '${_url}/api/wallet/withdraw',
+        // 'http://10.73.2.209:8080/api/wallet/withdraw',
+        data: {
+          'address': wallet,
+          'sender': sender,
+          'amount': amount
+        },
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
+      );
+      
+
+      String response = res.toString();
+      print('Response prima: $response');
+      final result = jsonDecode(response);
+
+      if (result["msg"] != null) {
+        result['isThereError'] = false;
+        authResponse['isAccountSetUp'] = true;
+        print("Priting of withdrawal result: ${result}");
+        return result;
+      } else {
+        authResponse['error'] = defaultError;
+        return authResponse;
+      }
+
+    } on DioException catch (e) {
+      print("Print from e");
+      // print(e);
+      print('Error: from e.response');
+      print('Error: ${e.response?.data}');
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        if (e.response?.data['error'] == 'Request is not authorized') {
+          authResponse['error'] = 'Account does not exist';
+          return authResponse;
+        } else if (e.response?.data['error'] == 'Account not setup') {
+          authResponse['isAccountSetUp'] = false;
+          return authResponse;
+        }else if (e.response?.data['error'] != null && e.response?.data['error'] != '') {
+          authResponse['error'] = e.response?.data['error'];
+          return authResponse;
+        } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+        }
+      } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+      }
+    }
+}
+
+
+
+
+Future<Map<String, dynamic>> getStockList ({required type, int page = 1, int limit = 5}) async {
+  Map<String, dynamic> authResponse = {};
+  authResponse['isThereError'] = true;
+  authResponse['type'] = type;
+
+  final defaultError = "An Unknown Error Occured, Please try again";
+
+  String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
+    try {
+      var res = await Dio().get(
+        '${_url}/api/stock/getStockList?page=$page&limit=$limit',
+        // 'http://10.73.2.209:8080/api/stock/getStockList',
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
+      );
+      
+
+      String response = res.toString();
+      // print('Response prima: $response');
+      final result = jsonDecode(response);
+
+        return result;
     } on DioException catch (e) {
       print(e);
       print('Error: ${e.response?.data}');
@@ -849,6 +1134,207 @@ Future<Map<String, dynamic>> getWallet ({required type}) async {
       }
     }
 }
+
+
+
+
+Future<Map<String, dynamic>> getStockInfo ({required type, required String symbol}) async {
+  Map<String, dynamic> authResponse = {};
+  authResponse['isThereError'] = true;
+  authResponse['type'] = type;
+
+  final defaultError = "An Unknown Error Occured, Please try again";
+
+  String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
+    try {
+      var res = await Dio().get(
+        '${_url}/api/stock/getStockInfo?symbol=$symbol',
+        // 'http://10.73.2.209:8080/api/stock/getStockInfo',
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
+      );
+      
+
+      String response = res.toString();
+      print('Response prima: $response');
+      final result = jsonDecode(response);
+
+        return result;
+    } on DioException catch (e) {
+      print(e);
+      print('Error: ${e.response?.data}');
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        if (e.response?.data['error'] == 'Request is not authorized') {
+          authResponse['error'] = 'Account does not exist';
+          return authResponse;
+        } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+        }
+      } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+      }
+    }
+}
+
+
+
+
+
+Future<Map<String, dynamic>> placeOrder ({
+  required bool isItBuy, 
+  required String symbol, 
+  required double pricePerStock, 
+  required double noOfStock,
+  required double orderPrice,
+  required double orderFee,
+  required String stockName
+  }) async {
+
+  Map<String, dynamic> authResponse = {};
+  authResponse['isThereError'] = true;
+
+  final defaultError = "An Unknown Error Occured, Please try again";
+
+  String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
+    try {
+      var res = await Dio().post(
+        isItBuy 
+        ?
+        '${_url}/api/order/buyOrder'
+        :
+        '${_url}/api/order/sellOrder',
+        // 'http://10.73.2.209:8080/api/order/buyOrder',
+        data: {
+          'stockName': stockName,
+          'symbol': symbol,
+          'pricePerStock': pricePerStock,
+          'noOfStock': noOfStock,
+          'orderPrice': orderPrice,
+          'orderFee': orderFee
+        },
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
+      );
+      
+
+      String response = res.toString();
+      print('Response prima: $response');
+      final result = jsonDecode(response);
+
+      if (result["msg"] != null) {
+        result['isThereError'] = false;
+        authResponse['isAccountSetUp'] = true;
+        print("Priting of withdrawal result: ${result}");
+        return result;
+      } else {
+        authResponse['error'] = defaultError;
+        return authResponse;
+      }
+
+    } on DioException catch (e) {
+      print("Print from e");
+      // print(e);
+      print('Error: from e.response');
+      print('Error: ${e.response?.data}');
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        if (e.response?.data['error'] == 'Request is not authorized') {
+          authResponse['error'] = 'Account does not exist';
+          return authResponse;
+        } else if (e.response?.data['error'] == 'Account not setup') {
+          authResponse['isAccountSetUp'] = false;
+          return authResponse;
+        }else if (e.response?.data['error'] != null && e.response?.data['error'] != '') {
+          authResponse['error'] = e.response?.data['error'];
+          return authResponse;
+        } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+        }
+      } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+      }
+    }
+}
+
+
+
+
+
+
+Future<Map<String, dynamic>> getStockNumbers ({required type, required String symbol}) async {
+  Map<String, dynamic> authResponse = {};
+  authResponse['isThereError'] = true;
+  authResponse['type'] = type;
+
+  final defaultError = "An Unknown Error Occured, Please try again";
+
+  String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
+    try {
+      var res = await Dio().get(
+        '${_url}/api/stock/getStockNumbers?symbol=$symbol',
+        // 'http://10.73.2.209:8080/api/stock/getStockNumbers',
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
+      );
+      
+
+      String response = res.toString();
+      print('Response prima: $response');
+      final result = jsonDecode(response);
+
+        return result;
+    } on DioException catch (e) {
+      print(e);
+      print('Error: ${e.response?.data}');
+      if (e.response?.data != null && e.response?.data['error'] != null) {
+        print(e.response?.data['error']);
+        if (e.response?.data['error'] == 'Request is not authorized') {
+          authResponse['error'] = 'Account does not exist';
+          return authResponse;
+        } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+        }
+      } else {
+          authResponse['error'] = defaultError;
+          return authResponse;
+      }
+    }
+}
+
+
 
 
 

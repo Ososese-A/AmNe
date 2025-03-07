@@ -13,6 +13,10 @@ class InputField extends StatefulWidget {
   final bool isItBuy;
   final bool forgotPassword;
   final VoidCallback? forgotPasswordAction;
+  final bool isItEnabled;
+  final VoidCallback? disabledCallback;
+  final VoidCallback? setMaxAmount;
+  final FocusNode? focusNode;
 
   InputField({
     required this.placeholder, 
@@ -24,7 +28,11 @@ class InputField extends StatefulWidget {
     required this.controller,
     this.isItBuy = false,
     this.forgotPassword = false,
-    this.forgotPasswordAction
+    this.forgotPasswordAction,
+    this.isItEnabled = false,
+    this.disabledCallback,
+    this.setMaxAmount,
+    this.focusNode
   });
 
   @override
@@ -56,7 +64,12 @@ class _InputFieldState extends State<InputField> {
             widget.controller,
             widget.isItBuy,
             widget.forgotPassword,
-            widget.forgotPasswordAction
+            widget.forgotPasswordAction,
+            widget.isItEnabled,
+            widget.disabledCallback,
+            widget.setMaxAmount,
+            widget.focusNode,
+            context
           ),
 
           SizedBox(height: 16.0,),
@@ -88,8 +101,14 @@ Widget _field_selector(
   TextEditingController controller,
   bool isItBuy,
   bool forgotPassword,
-  VoidCallback? forgotPasswordAction
+  VoidCallback? forgotPasswordAction,
+  bool isItEnabled,
+  VoidCallback? disabledCallback,
+  VoidCallback? setMaxAmount,
+  FocusNode? _focusNode,
+  BuildContext ctx
 ) {
+
   switch (type) {
     case "password":
       return 
@@ -229,6 +248,11 @@ Widget _field_selector(
       );
 
     case "stock":
+        if  (isItEnabled) {
+            FocusScope.of(ctx).requestFocus(_focusNode);
+          } else {
+            _focusNode!.unfocus();
+        }
       return 
 
       isItBuy
@@ -252,8 +276,9 @@ Widget _field_selector(
             SizedBox(width: 16.0,),
             Expanded(
               child: TextField(
+                focusNode: _focusNode,
+                enabled: isItEnabled,
                 controller: controller,
-                obscureText: obscure,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: placeHolder,
@@ -266,7 +291,7 @@ Widget _field_selector(
             SizedBox(width: 16.0,),
             GestureDetector(
               child: svg_box(28.0, 28.0, "assets/icons/edit.svg"),
-              onTap: () {},
+              onTap: disabledCallback,
             ),
           ],
         )
@@ -311,7 +336,7 @@ Widget _field_selector(
           SizedBox(height: 16.0,),
 
           GestureDetector(
-              onTap: () {},
+              onTap: setMaxAmount,
               child: Text(
                 "Max",
                 style: TextStyle(
@@ -360,7 +385,7 @@ Widget _field_selector(
           SizedBox(height: 16.0,),
 
           GestureDetector(
-              onTap: () {},
+              onTap: setMaxAmount,
               child: Text(
                 "Max",
                 style: TextStyle(

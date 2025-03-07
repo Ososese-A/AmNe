@@ -6,6 +6,7 @@ import 'package:frontend/add_ons/info_box.dart';
 import 'package:frontend/add_ons/main_app_bar.dart';
 import 'package:frontend/components/main_card.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -117,7 +118,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
               SizedBox(height: 40.0,),
 
-              btn("Logout", true, () {}),
+              btn("Logout", true, () {
+                setU("");
+                setA("");
+                setJ("");
+                setMainPage(context, "/intro", "/intro");
+              }),
 
               SizedBox(height: 40.0,),
             ],

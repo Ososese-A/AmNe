@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/pop_up.dart';
+import 'package:frontend/notifiers/currency_notifier.dart';
 import 'package:frontend/themes/theme.dart';
-import 'package:frontend/utilities/currencyUtilities.dart';
+import 'package:provider/provider.dart';
 
 class CurrencyBadge extends StatefulWidget {
 
@@ -16,12 +17,10 @@ class CurrencyBadge extends StatefulWidget {
 class _CurrencyBadgeState extends State<CurrencyBadge> {
   @override
   Widget build(BuildContext context) {
-    String currency = getCur();
+    String currency = Provider.of<CurrencyNotifier>(context).currency;
 
-    void _setCurrency () {
-      setState(() {
-        currency = getCur();
-      });
+    void _setCurrency (String newCurrency) {
+      Provider.of<CurrencyNotifier>(context, listen: false).setCurrency(newCurrency);
     }
 
 
@@ -34,14 +33,12 @@ class _CurrencyBadgeState extends State<CurrencyBadge> {
         primaryBtn: true,
         primaryBtnTxt: 'NGN',
         primaryBtnOnTap: () {
-          setCur('NGN');
-          _setCurrency();
+          _setCurrency('NGN');
         },
         secondaryBtn: true,
         secondaryBtnTxt: 'USD',
         secondaryBtnOnTap: () {
-          setCur('USD');
-          _setCurrency();
+          _setCurrency('USD');
         }
       ),
       child: Container(

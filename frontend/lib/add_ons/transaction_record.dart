@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/themes/theme.dart';
 
-Container transaction_record (String currency, amount, participant, time) {
+Container transaction_record (String currency, amount, participant, time, type) {
   return Container(
     width: double.infinity,
     margin: EdgeInsets.only(bottom: 40.0, left: 4.0, right: 4.0),
     decoration: BoxDecoration(
-      color: double.parse(amount) > 0 ? customColors.app_dark_a : customColors.app_dark_b,
+      color: customColors.app_dark_b,
       borderRadius: BorderRadius.circular(8.0)
     ),
     padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 32.0),
@@ -39,12 +39,7 @@ Container transaction_record (String currency, amount, participant, time) {
 
         Text(
           '${value_to_delimal(value: double.parse(amount), type: false)} $currency',
-          style: 
-          double.parse(amount) > 0 
-          ?
-          TextStyle(color: customColors.app_green, fontSize: 12.0)
-          :
-          TextStyle(color: customColors.app_red, fontSize: 12.0)
+          style: TextStyle(color: customColors.app_red, fontSize: 12.0)
         )
       ],
     ),

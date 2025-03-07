@@ -1,6 +1,7 @@
 const User = require('../schemas/mongoose/userSchema')
 const { validationResult, matchedData } = require('express-validator')
 const { createToken } = require('../utility/tokenUtility')
+const { sendEmail } = require('../service/emailService')
 
 const login = async (req, res) => {
     const errResult = validationResult(req)
@@ -34,6 +35,7 @@ const login = async (req, res) => {
         const token = createToken(user._id, tokenExpires)
         // res.sendStatus(200)
         console.log({id: user._id, token, tokenExpires})
+        // sendEmail("Login", "You just logged in", data.email)
         res.status(200).json({id: user._id, token, tokenExpires})
     } catch (error) {
         console.log(error.message)

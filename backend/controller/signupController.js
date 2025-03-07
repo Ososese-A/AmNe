@@ -1,6 +1,7 @@
 const User = require('../schemas/mongoose/userSchema')
 const { validationResult, matchedData } = require('express-validator')
 const { createToken } = require('../utility/tokenUtility')
+const { sendEmail } = require('../service/emailService')
 
 const signup = async (req, res) => {
     const errResult = validationResult(req)
@@ -34,6 +35,8 @@ const signup = async (req, res) => {
 
         const token = createToken(user._id, tokenExpires)
         // res.sendStatus(200)
+
+        // sendEmail("Successful Signup", "thank you for signing up to our app", data.email)
         res.status(201).json({id: user._id, token, tokenExpires})
     } catch (error) {
         console.log(error.message)

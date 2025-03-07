@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
@@ -9,8 +6,6 @@ import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
-import 'package:frontend/utilities/cryptUtility.dart';
-import 'package:frontend/utilities/dateTimeUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 
 class LoginPage extends StatefulWidget {
@@ -114,22 +109,22 @@ class _LoginPageState extends State<LoginPage> {
         
               SizedBox(height: 120.0),
         
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Or Login with:",
-                    style: TextStyle(
-                      color: customColors.app_white,
-                      fontSize: 20.0
-                    ),
-                  ),
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Text(
+              //       "Or Login with:",
+              //       style: TextStyle(
+              //         color: customColors.app_white,
+              //         fontSize: 20.0
+              //       ),
+              //     ),
         
-                  SizedBox(height: 28.0,),
+              //     SizedBox(height: 28.0,),
         
-                  google_btn(() {})
-                ],
-              )
+              //     google_btn(() {})
+              //   ],
+              // )
             ],
           ),
         ),

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/model/accountModel.dart';
+import 'package:frontend/model/historyModel.dart';
+import 'package:frontend/notifiers/account_setup_notifier.dart';
+import 'package:frontend/notifiers/currency_notifier.dart';
 import 'package:frontend/pages/account_setup_page.dart';
 import 'package:frontend/pages/account_setup_page_three.dart';
 import 'package:frontend/pages/account_setup_page_two.dart';
@@ -35,10 +39,12 @@ import 'package:frontend/pages/stock_info_page.dart';
 import 'package:frontend/pages/stock_page.dart';
 import 'package:frontend/pages/transaction_detail_page.dart';
 import 'package:frontend/pages/transaction_history_page.dart';
+import 'package:frontend/pages/transaction_successful_page.dart';
 import 'package:frontend/pages/transaction_view_page.dart';
 import 'package:frontend/pages/withdraw_page_one.dart';
 import 'package:frontend/pages/withdraw_page_two.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   //hive setup box
@@ -46,7 +52,17 @@ void main() async {
 
   var con = await Hive.openBox('dis');
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => Walletmodel()),
+        ChangeNotifierProvider(create: (context) => CurrencyNotifier()),
+        ChangeNotifierProvider(create: (context) => isAccountSetUpNotifier()),
+        ChangeNotifierProvider(create: (context) => HistoryModel()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -63,12 +79,12 @@ class MyApp extends StatelessWidget {
       // home: LoginPage(),
       // home: KycUploadPage(),
       // home: SignupPage(),
-      home: AuthPage(),
+      // home: AuthPage(),
       // home: PinPage(),
       // home: BuyStockPage(),
       // home: StockInfoPage(),
       // initialRoute: '/main',
-      // initialRoute: '/intro',
+      initialRoute: '/intro',
       routes: {
         '/intro' : (context) => IntroPage(),
         '/auth': (context) => AuthPage(),
@@ -93,6 +109,7 @@ class MyApp extends StatelessWidget {
         '/withdrawOne': (context) => WithdrawPageOne(),
         '/withdrawTwo': (context) => WithdrawPageTwo(),
         '/transactionDetail': (context) => TransactionDetailPage(),
+        '/transactionSuccess': (context) => TransactionSuccessfulPage(),
         '/accountSetup': (context) => AccountSetupPage(),
         '/accountSetupTwo': (context) => AccountSetupPageTwo(),
         '/accountSetupThree': (context) => AccountSetupPageThree(),

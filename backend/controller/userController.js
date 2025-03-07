@@ -2,7 +2,7 @@ const { validationResult, matchedData } = require("express-validator")
 const User = require('../schemas/mongoose/userSchema')
 const { default: mongoose } = require("mongoose")
 const { decrypt, encrypt } = require("../utility/cryptUtility")
-const { createWallet } = require("../service/walletService")
+const { createWallet } = require("../service/walletCreateService")
 const bcrypt =require("bcrypt");
 
 const setAccount = async (req, res) => {
@@ -194,7 +194,9 @@ const kycUpload = async (req, res) => {
     const storedKey = encrypt(key)
 
 
-    const wallet = user.accountfinancials[0].wallet
+    const wallet = user.accountfinancials
+    console.log(wallet)
+    console.log(typeof wallet)
     const walletDetails = {
         address: address,
         balance: 0,
@@ -202,9 +204,9 @@ const kycUpload = async (req, res) => {
     }
 
     if (wallet.length > 0) {
-        wallet[0] = walletDetails;
+        wallet[0].wallet = walletDetails;
     } else {
-        wallet.push(walletDetails)
+        wallet.push({wallet: walletDetails})
     }
 
     console.log(wallet)

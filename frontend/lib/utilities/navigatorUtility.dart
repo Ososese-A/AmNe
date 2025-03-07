@@ -9,6 +9,18 @@ void next (BuildContext ctx, String route) {
   Navigator.pushNamed(ctx, route);
 }
 
+// bool _isNavigating = false;
+
+// void next(BuildContext ctx, String route) {
+//   if (!_isNavigating) {
+//     _isNavigating = true;
+//     Navigator.pushNamed(ctx, route).then((_) {
+//       _isNavigating = false;
+//     });
+//   }
+// }
+
+
 // void setMainPage(BuildContext ctx, String route) {
 //   Navigator.pushNamedAndRemoveUntil(
 //     ctx,

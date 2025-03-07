@@ -6,12 +6,22 @@ const transactionSchema = new mongoose.Schema({
         required: true
     },
 
+    type: {
+        type: mongoose.Schema.Types.String,
+        required: true
+    },
+
     fee: {
         type: mongoose.Schema.Types.Number,
         required: true
     },
 
     amount: {
+        type: mongoose.Schema.Types.Number,
+        required: true
+    }, 
+
+    dateTime: {
         type: mongoose.Schema.Types.Number,
         required: true
     }

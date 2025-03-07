@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/borderless_btn.dart';
 import 'package:frontend/add_ons/main_app_bar.dart';
 import 'package:frontend/add_ons/pin_dot.dart';
+import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/components/main_card.dart';
 import 'package:frontend/components/portfolio_box.dart';
+import 'package:frontend/model/accountModel.dart';
+import 'package:frontend/model/historyModel.dart';
+import 'package:frontend/notifiers/account_setup_notifier.dart';
+import 'package:frontend/notifiers/currency_notifier.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
+import 'package:frontend/utilities/currencyUtilities.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  final accountBalance;
 
   const HomePage({
     super.key,
-    this.accountBalance = '0'
   });
 
   @override
@@ -23,7 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final bool isAccountSetUp = getAS();
   bool obscure = false;
 
   void _hiddenToggle () {
@@ -35,7 +39,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print("This is the getAS value from home $isAccountSetUp");
+    final wallet = Provider.of<Walletmodel>(context);
+    final currency = Provider.of<CurrencyNotifier>(context).currency;
+    final isAccountSetUp = Provider.of<isAccountSetUpNotifier>(context).isAccountSetUp;
+    final portfolioCOunt = Provider.of<HistoryModel>(context).portfolio;
+    
     return Scaffold(
       backgroundColor: customColors.app_black,
       appBar: main_app_bar(context),
@@ -88,11 +96,7 @@ class _HomePageState extends State<HomePage> {
                   )
                   :
                   Text(
-                    widget.accountBalance.runtimeType == String 
-                    ? 
-                    "${value_to_delimal(value: double.parse(widget.accountBalance), type: false)} ETN" 
-                    : 
-                    "${value_to_delimal(value: widget.accountBalance, type: true)} ETN", 
+                    "${value_to_delimal(value: wallet.balance, type: true)} ETN", 
                     style: TextStyle(color: customColors.app_white, fontSize: 24.0),
                   )
                 ],
@@ -115,7 +119,11 @@ class _HomePageState extends State<HomePage> {
                   )
                   :
                   Text(
-                    "₦0.00",
+                    currency == "USD"
+                    ?
+                    "\$${value_to_delimal(value: wallet.balanceInDollars, type: false)}"
+                    :
+                    "₦${value_to_delimal(value: wallet.balanceInNaira, type: false)}",
                     style: TextStyle(fontSize: 16.0, color:  customColors.app_white),
                   ),
                   
@@ -163,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         PortfolioBox(
                             customize: true,
-                            count: 4,
+                            count: portfolioCOunt.length >= 4 ? 4 : portfolioCOunt.length,
                           ),
                       ],
                     ),

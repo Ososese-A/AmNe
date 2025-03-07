@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/btn.dart';
+import 'package:frontend/add_ons/loading_spinner.dart';
 import 'package:frontend/add_ons/sec_app_bar.dart';
+import 'package:frontend/add_ons/value_to_decimal.dart';
+import 'package:frontend/model/accountModel.dart';
+import 'package:frontend/model/historyModel.dart';
+import 'package:frontend/notifiers/currency_notifier.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+import 'package:provider/provider.dart';
 
 class StockInfoPage extends StatefulWidget {
   const StockInfoPage({super.key});
@@ -13,12 +20,62 @@ class StockInfoPage extends StatefulWidget {
 
 class _StockInfoPageState extends State<StockInfoPage> {
   bool isExpanded = false;
+  bool isLoading = false;
+  String name = "";
+  String symbol = "";
+  String description = "";
+  double change = 0.0;
+  double percent = 0.0;
+  double price = 0.0;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    final String stockData = ModalRoute.of(context)!.settings.arguments as String? ?? 'SYMB';
+    if (name != "" || name != null) {
+      _getStockInfo(stockData);
+    }
+  }
+
+  void _getStockInfo (stock) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    print("This is the stock being passed");
+    print(stock);
+    final stockInfo = await getStockInfo(type: "stockInfo", symbol: stock);
+    print("STockInfo from stock infor page");
+    print(stockInfo);
+
+    setState(() {
+      name = stockInfo["name"];
+      symbol = stockInfo["symbol"];
+      description = stockInfo["stockInfo"];
+      price = stockInfo["regularMarketPrice"];
+      percent = stockInfo["regularMarketChangePercent"];
+      change = stockInfo["regularMarketChange"];
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final String stockData = ModalRoute.of(context)!.settings.arguments as String? ?? 'SYMB';
+    String currency = Provider.of<CurrencyNotifier>(context).currency;
+    double rate = Provider.of<Walletmodel>(context).rate;
+    double balance = Provider.of<Walletmodel>(context).balance;
+    double etnValue = Provider.of<Walletmodel>(context).etnValue;
+    double stockInEtn = price / etnValue;
+    print(balance);
+    print(price);
+    print(etnValue);
 
-    bool isInPortfolio = true;
+    HistoryModel historyModel = Provider.of<HistoryModel>(context);
+    print("This is the check for the symbol $symbol");
+    bool isInPortfolio = historyModel.isStockInPortfolio(symbol);
+    print("This is the check for the isInportfolio $isInPortfolio");
 
      void _expansionToggle () {
       setState(() {
@@ -26,119 +83,103 @@ class _StockInfoPageState extends State<StockInfoPage> {
       });
      }
 
+     final noOfStockOwned = historyModel.getNoOfStocks(symbol);
+     print("$noOfStockOwned");
+     final buyPricePerStock = historyModel.getBuyPricePerStock(symbol);
+     final profitOrLossPriceInter = stockInEtn - buyPricePerStock;
+     final profitOrLossPrice = profitOrLossPriceInter * buyPricePerStock * noOfStockOwned;
+
     return Scaffold(
       backgroundColor: customColors.app_black,
       appBar: sec_app_bar(context, "Stock Info"),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal:  16.0),
-          child: Column(
-            children: [
-              Column(
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal:  16.0),
+              child: Column(
                 children: [
-                  Text(
-                    "Apple Inc",
-                    style: TextStyle(
-                        color: customColors.app_white,
-                        fontSize: 40.0
-                      ),
-                  ),
-          
-                  SizedBox(height: 12.0,),
-          
-                  Text(
-                    "($stockData)",
-                    style: TextStyle(
-                        color: customColors.app_white,
-                        fontSize: 20.0
-                      ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 36.0,),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "356 USD",
-                    style: TextStyle(
-                        color: customColors.app_white,
-                        fontSize: 20.0
-                      ),
-                  ),
-          
-                  Row(
-                    children: [
-                      Text(
-                        "-1.2%",
-                        style: TextStyle(
-                            color: customColors.app_red,
-                            fontSize: 16.0
-                          ),
-                      ),
-          
-                      SizedBox(width: 16.0,),
-                      
-                      Text(
-                        "-5.00",
-                        style: TextStyle(
-                            color: customColors.app_red,
-                            fontSize: 16.0
-                          ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              isInPortfolio
-
-              ?
-
-              Column(
-                children: [
-                  SizedBox(height: 36.0,),
-
                   Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      SizedBox(height: 28.0,),
+                      Text(
+                        name,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: customColors.app_white,
+                            fontSize: 36.0
+                          ),
+                      ),
+              
+                      SizedBox(height: 12.0,),
+              
+                      Text(
+                        "($stockData)",
+                        style: TextStyle(
+                            color: customColors.app_white,
+                            fontSize: 20.0
+                          ),
+                      ),
+                    ],
+                  ),
+          
+                  SizedBox(height: 36.0,),
+          
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "No of stocks owned:",
-                            style: TextStyle(
-                                color: customColors.app_white,
-                                fontSize: 20.0
-                              ),
-                          ),
-                          Text(
-                            "24.97",
+                            currency == "NGN"
+                            ?
+                            "${value_to_delimal(value: (price * rate), type: false)} NGN"
+                            :
+                            "${value_to_delimal(value: price, type: false)} USD",
                             style: TextStyle(
                                 color: customColors.app_white,
                                 fontSize: 16.0
                               ),
                           ),
-                        ],
-                      ),
 
-                      SizedBox(height: 36.0,),
+                          SizedBox(height:  16.0),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
                           Text(
-                            "Total profit/loss:",
+                            "(${value_to_delimal(value: stockInEtn, type: false)} ETN)",
                             style: TextStyle(
                                 color: customColors.app_white,
-                                fontSize: 20.0
+                                fontSize: 14.0
+                              ),
+                          )
+                        ],
+                      ),
+              
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            percent < 0 
+                            ? 
+                            "${value_to_delimal(value: percent, type: false)}%"
+                            :
+                            "+${value_to_delimal(value: percent, type: false)}%",
+                            style: TextStyle(
+                                color: percent < 0 ? customColors.app_red : customColors.app_green,
+                                fontSize: 16.0
                               ),
                           ),
+              
+                          SizedBox(width: 20.0,),
+                          
                           Text(
-                            "+ 13 USD",
+                            currency == "NGN"
+                            ?
+                            percent < 0 ? "${value_to_delimal(value: (change * rate), type: false)}" : "+${value_to_delimal(value: (change * rate), type: false)}"
+                            :
+                            percent < 0 ? "${value_to_delimal(value: change, type: false)}" : "+${value_to_delimal(value: change, type: false)}",
                             style: TextStyle(
-                                color: customColors.app_green,
+                                color: percent < 0 ? customColors.app_red : customColors.app_green,
                                 fontSize: 16.0
                               ),
                           ),
@@ -146,60 +187,145 @@ class _StockInfoPageState extends State<StockInfoPage> {
                       ),
                     ],
                   ),
-                  
+          
+                  isInPortfolio
+          
+                  ?
+          
+                  Column(
+                    children: [
+                      SizedBox(height: 36.0,),
+          
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "No of stocks owned:",
+                                style: TextStyle(
+                                    color: customColors.app_white,
+                                    fontSize: 20.0
+                                  ),
+                              ),
+                              Text(
+                                "$noOfStockOwned",
+                                style: TextStyle(
+                                    color: customColors.app_white,
+                                    fontSize: 16.0
+                                  ),
+                              ),
+                            ],
+                          ),
+          
+                          SizedBox(height: 36.0,),
+          
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Total profit/loss:",
+                                style: TextStyle(
+                                    color: customColors.app_white,
+                                    fontSize: 20.0
+                                  ),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    currency == "NGN"
+                                    ?
+                                    "${value_to_delimal(value: (profitOrLossPriceInter * rate), type: false)} NGN"
+                                    :
+                                    "${value_to_delimal(value: profitOrLossPriceInter, type: false)} USD",
+                                    style: TextStyle(
+                                        color: profitOrLossPrice > 0 ? customColors.app_green : customColors.app_red,
+                                        fontSize: 16.0
+                                      ),
+                                  ),
+                                  Text(
+                                    "(${value_to_delimal(value: profitOrLossPrice, type: false)} ETN)",
+                                    style: TextStyle(
+                                        color: profitOrLossPrice > 0 ? customColors.app_green : customColors.app_red,
+                                        fontSize: 14.0
+                                      ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      
+                      SizedBox(height: 36.0,),
+                    ],
+                  )
+          
+                  :
+          
                   SizedBox(height: 36.0,),
+          
+                  Text(
+                    description,
+                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                    maxLines: isExpanded ? null : 10,
+                    style: TextStyle(
+                      color: customColors.app_white,
+                      fontSize: 16.0
+                    ),
+                  ),
+          
+                  GestureDetector(
+                    onTap: _expansionToggle,
+                    child: Text(
+                      isExpanded ? "Show Less" : "Show More",
+                      style: TextStyle(
+                        color: customColors.app_light_a,
+                        fontSize: 16.0
+                    ),
+                    ),
+                  ),
+          
+                  SizedBox(height: 36.0,),
+          
+                  // btn('Buy', false, () => next(context, '/buy')),
+                  btn('Buy', false, () => nextWithData(context, '/buy', {
+                    "symbol": symbol,
+                    "stockName": name,
+                    "pricePerShareNaira": (price * rate),
+                    "pricePerShareDollars": price,
+                    "etnPricePerShare": (stockInEtn)
+                  })),
+          
+                  isInPortfolio 
+                  ?
+                  Column(
+                    children: [
+                      SizedBox(height: 36.0,),
+          
+                      btn('Sell', true, () => nextWithData(context, '/sell', {
+                        "symbol": symbol,
+                        "stockName": name,
+                        "pricePerShareNaira": (price * rate),
+                        "pricePerShareDollars": price,
+                        "etnPricePerShare": (stockInEtn),
+                        "noOfStocksOwned": noOfStockOwned
+                      })),
+                      
+                      SizedBox(height: 36.0,),
+                    ],
+                  )
+                  :
+                  SizedBox(height: 36.0,)
                 ],
-              )
-
-              :
-
-              SizedBox(height: 36.0,),
-
-              Text(
-                'Apple Inc. designs, manufactures and markets smartphones, personal computers, tablets, wearables and accessories, and sells a variety of related services. Its product categories include iPhone, Mac, iPad, and Wearables, Home and Accessories. Its software platforms include iOS, iPadOS, macOS, watchOS, visionOS, and tvOS. Its services include advertising, AppleCare, cloud services, digital content and payment services. The Company operates various platforms, including the App Store, that allow customers to discover and download applications and digital content, such as books, music, video, games and podcasts. It also offers digital content through subscription-based services, including Apple Arcade, Apple Fitness+, Apple Music, Apple News+, and Apple TV+. Its products include iPhone 16 Pro, iPhone 16, iPhone 15, iPhone 14, iPhone SE, MacBook Air, MacBook Pro, iMac, Mac mini, Mac Studio, Mac Pro, iPad Pro, iPad Air, AirPods, AirPods Pro, AirPods Max, Apple TV and Apple Vision Pro.',
-                overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                maxLines: isExpanded ? null : 10,
-                style: TextStyle(
-                  color: customColors.app_white,
-                  fontSize: 16.0
-                ),
               ),
-
-              GestureDetector(
-                onTap: _expansionToggle,
-                child: Text(
-                  isExpanded ? "Show Less" : "Show More",
-                  style: TextStyle(
-                    color: customColors.app_light_a,
-                    fontSize: 16.0
-                ),
-                ),
-              ),
-
-              SizedBox(height: 36.0,),
-
-              btn('Buy', false, () => next(context, '/buy')),
-
-              isInPortfolio 
-              
-              ?
-
-              Column(
-                children: [
-                  SizedBox(height: 36.0,),
-
-                  btn('Sell', true, () => next(context, '/sell')),
-                  
-                  SizedBox(height: 36.0,),
-                ],
-              )
-
-              :
-
-              SizedBox(height: 36.0,)
-            ],
+            ),
           ),
-        ),
+
+          if (isLoading)
+          loading_spinner()
+        ],
       ),
     );
   }

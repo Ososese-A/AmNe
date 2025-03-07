@@ -22,7 +22,7 @@ class _AccountSetupPageTwoState extends State<AccountSetupPageTwo> {
 
   void _secure () async {
     String sQData = securityQuestionController.text;
-    String sAData = securityAnswerController.text;
+    String sAData = securityAnswerController.text.toLowerCase();
 
     if (sQData == '' || sAData == '') {
       setState(() {

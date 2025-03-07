@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../schemas/mongoose/userSchema')
 
 const auth = async (req, res, next) => {
+    console.log("req.file from auth middleware")
     console.log(req.file)
 
     //verify authentication 
@@ -19,6 +20,7 @@ const auth = async (req, res, next) => {
         req.user = await User.findOne({_id}).select('_id')
         next()
     } catch (error) {
+        console.log("error from auth middleware")
         console.log(error)
         res.status(401).json({error: 'Request is not authorized'})
     }

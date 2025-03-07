@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
+import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/components/input_field.dart';
+import 'package:frontend/model/accountModel.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+import 'package:provider/provider.dart';
 
 class WithdrawPageTwo extends StatefulWidget {
   const WithdrawPageTwo({super.key});
@@ -13,17 +17,66 @@ class WithdrawPageTwo extends StatefulWidget {
 }
 
 class _WithdrawPageTwoState extends State<WithdrawPageTwo> {
-  final String walletError = "";
-  final TextEditingController walletController = TextEditingController();
+  String walletError = "";
+  TextEditingController walletController = TextEditingController();
 
-  final String amountError = "";
-  final TextEditingController amountController = TextEditingController();
+  String amountError = "";
+  TextEditingController amountController = TextEditingController();
 
+  void setAddress (address) {
+    setState(() {
+      walletController.text = address;
+    });
+  }
+
+  void setMaxAmount(balance) {
+    final maxAmount = balance - 0.000042;
+    setState(() {
+      amountController.text = maxAmount.toString();
+      print("From set max amount");
+      print(maxAmount);
+    });
+  }
+
+  void getGasFee (String userSender) async {
+    final wallet = walletController.text;
+    final amount = amountController.text;
+
+    final backendResponse = await checkGasFee(wallet: wallet, amount: amount, sender: userSender);
+    if (backendResponse["isThereError"]) {
+        print(backendResponse['error']);
+        setState(() {
+          amountError = backendResponse['error'];
+        });
+    } else {
+        print("This is the gas fee response");
+        print(backendResponse["gasFee"].runtimeType);
+        print(backendResponse["gasFee"]);
+        // btn("Send", false, () => setMainPageWithData(context, '/transactionDetail', '/main', {
+                  //   'transactionID': 'z9ZHBahg7qKXxgthu8eP3ABP7k3ra5WH',
+                  //   'receiver': address,
+                  //   'amount': '20.0000 ETN',
+                  //   'gasFee': '0.00021 ETN',
+                  //   'total': '20.00021 ETN'
+                  // })),
+        nextWithData(context, "/transactionDetail", {
+          'receiver': wallet,
+          'amount': amount,
+          'gasFee': backendResponse["gasFee"],
+          'total': (double.parse(amount) + double.parse(backendResponse["gasFee"]))
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> walletAddress = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic> ?? {};
     final address = walletAddress['address'];
+    setAddress(address);
+    print(walletController.text);
+    final balance = Provider.of<Walletmodel>(context).balance;
+    final userSender = Provider.of<Walletmodel>(context).address;
+    
 
 
     return Scaffold(
@@ -49,7 +102,7 @@ class _WithdrawPageTwoState extends State<WithdrawPageTwo> {
                 SizedBox(height: 28.0,),
         
                 Text(
-                  "145,678.9999 ETN",
+                  "${value_to_delimal(value: balance, type: false)} ETN",
                   style: TextStyle(
                       color: customColors.app_white,
                       fontSize: 16.0
@@ -82,6 +135,9 @@ class _WithdrawPageTwoState extends State<WithdrawPageTwo> {
                   errorHeight: 0.0, 
                   controller: walletController,
                   isItBuy: true,
+                  focusNode: FocusNode(),
+                  isItEnabled: false,
+                  disabledCallback: () => Navigator.pop(context),
                 ),
               ],
             ),
@@ -103,13 +159,15 @@ class _WithdrawPageTwoState extends State<WithdrawPageTwo> {
         
                 InputField(
                   placeholder: "Amount", 
-                  iconPath: 'assets/icons/ngn.svg', 
+                  iconPath: 'assets/icons/etn.svg', 
                   type: 'stock', 
                   error: amountError, 
                   fieldHeight: 200.0, 
                   errorHeight: 40.0, 
                   controller: amountController,
+                  focusNode: FocusNode(),
                   isItBuy: false,
+                  setMaxAmount: () => setMaxAmount(balance),
                 ),
               ],
             ),
@@ -117,13 +175,7 @@ class _WithdrawPageTwoState extends State<WithdrawPageTwo> {
             Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  btn("Send", false, () => setMainPageWithData(context, '/transactionDetail', '/main', {
-                    'transactionID': 'z9ZHBahg7qKXxgthu8eP3ABP7k3ra5WH',
-                    'receiver': address,
-                    'amount': '20.0000 ETN',
-                    'gasFee': '0.00021 ETN',
-                    'total': '20.00021 ETN'
-                  })),
+                  btn("Send", false, () => getGasFee(userSender)),
                 ],
             )
           ],

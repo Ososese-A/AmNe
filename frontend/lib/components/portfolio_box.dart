@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/empty_msg.dart';
 import 'package:frontend/add_ons/stock_box.dart';
+import 'package:frontend/add_ons/value_to_decimal.dart';
+import 'package:frontend/model/accountModel.dart';
+import 'package:frontend/model/historyModel.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+import 'package:provider/provider.dart';
 
-class PortfolioBox extends StatelessWidget {
+class PortfolioBox extends StatefulWidget {
   final bool customize;
   final int count;
 
@@ -14,118 +19,97 @@ class PortfolioBox extends StatelessWidget {
     this.count = 1
   });
 
-  final isPortfolioEmpty = true;
+  @override
+  State<PortfolioBox> createState() => _PortfolioBoxState();
+}
 
-  final List _stocks = [
-    {
-      'name': 'Apple Inc',
-      'symbol': 'AAPL',
-      'price': '247.10',
-      'percent': '0.63',
-      'change': '1.55',
-    },
-    {
-      'name': 'Warner Bros Discovery Inc',
-      'symbol': 'WBD',
-      'price': '11.09',
-      'percent': '0.31',
-      'change': '2.88',
-    },
-    {
-      'name': 'Broadcom Inc',
-      'symbol': 'AVGO',
-      'price': '207.93',
-      'percent': '-4.91',
-      'change': '10.73',
-    },
-    {
-      'name': 'Walmart Inc',
-      'symbol': 'WMT',
-      'price': '93.71',
-      'percent': '-1.13',
-      'change': '1.07',
-    },
-    {
-      'name': 'Nvidia Corporation',
-      'symbol': 'NVDA',
-      'price': '130.28',
-      'percent': '-3.09',
-      'change': '4.15',
-    },
-    {
-      'name': 'Sonos Inc',
-      'symbol': 'SONO',
-      'price': '12.51',
-      'percent': '4.86',
-      'change': '0.58',
-    },
-    {
-      'name': 'Western Digital Corporation Incorporated',
-      'symbol': 'WDC',
-      'price': '49.02',
-      'percent': '-5.58',
-      'change': '2.90',
-    },
-  ];
+class _PortfolioBoxState extends State<PortfolioBox> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, _fetchStockNumbers);
+  }
+
+  Future<void> _fetchStockNumbers() async {
+    await Provider.of<HistoryModel>(context, listen: false).fetchAndUpdateStockNumbers();
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isPortfolioEmpty = Provider.of<HistoryModel>(context).isPortfolioEmpty;
+    final etnValue = Provider.of<Walletmodel>(context).etnValue;
+    final dollarMultiple = 1 / etnValue;
+
+    final List _stocks = Provider.of<HistoryModel>(context).portfolio;
+
     return Expanded(
       child: Column(
         children: [
-          isPortfolioEmpty 
-          
-          ? 
-          
-          Container
-          (
-            margin: EdgeInsets.symmetric(vertical: 32.0),
-            child: empty_msg("assets/images/empty_portfolio_a.svg", "You currently have no stocks in your portfolio")
-          )
-          
-          :
-          
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ), 
-              // itemCount: 4,
-              itemCount: customize ? count : _stocks.length,
-              itemBuilder: (context, index) {
-              return ((index + 1) % 2 == 0 && (index + 1) % 4 == 0 ) || ((index + 1) % 2 == 1 && (index + 1) % 4 == 1 )
-              ?
-              GestureDetector(
-                onTap: () => nextWithData(context, '/stockInfo', _stocks[index]['symbol']),
-                child: stock_box(
-                  name: _stocks[index]['name'],
-                  symbol: _stocks[index]['symbol'],
-                  price: _stocks[index]['price'],
-                  percent: _stocks[index]['percent'],
-                  change: _stocks[index]['change'],
-                  positive: double.parse(_stocks[index]['percent']) > 0,
-                  backgroundColor: customColors.app_dark_b
-                ),
-              )
-          
-              :
-          
-              GestureDetector(
-                onTap: () => nextWithData(context, '/stockInfo', _stocks[index]['symbol']),
-                child: stock_box(
-                  name: _stocks[index]['name'],
-                  symbol: _stocks[index]['symbol'],
-                  price: _stocks[index]['price'],
-                  percent: _stocks[index]['percent'],
-                  change: _stocks[index]['change'],
-                  positive: double.parse(_stocks[index]['percent']) > 0,
-                ),
-              );
-            },
-            ),
-          ),
+          _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: customColors.app_light_a,
+                    strokeWidth: 8.0,
+                    strokeCap: StrokeCap.round,
+                  ),
+                )
+              : isPortfolioEmpty
+                  ? Container(
+                      margin: EdgeInsets.symmetric(vertical: 32.0),
+                      child: empty_msg("assets/images/empty_portfolio_a.svg",
+                          "You currently have no stocks in your portfolio"),
+                    )
+                  : Expanded(
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
+                        ),
+                        itemCount: widget.customize ? widget.count : _stocks.length,
+                        itemBuilder: (context, index) {
+                          final stock = _stocks[index];
+                          final stockName = stock['stockName'] ?? 'N/A';
+                          final stockSymbol = stock['stockSymbol'] ?? 'N/A';
+                          final regularMarketPrice = stock['regularMarketPrice'] ?? 0;
+                          final regularMarketChangePercent = stock['regularMarketChangePercent'] ?? 0;
+                          final regularMarketChange = stock['regularMarketChange'] ?? 0;
+
+                          if (regularMarketPrice == 0) _fetchStockNumbers();
+
+                          return ((index + 1) % 2 == 0 && (index + 1) % 4 == 0) ||
+                                  ((index + 1) % 2 == 1 && (index + 1) % 4 == 1)
+                              ? GestureDetector(
+                                  onTap: () => nextWithData(context, '/stockInfo', stockSymbol),
+                                  child: stock_box(
+                                    name: stockName,
+                                    symbol: stockSymbol,
+                                    price: "${value_to_delimal(value: (regularMarketPrice * dollarMultiple), type: false)}",
+                                    percent: "${value_to_delimal(value: (regularMarketChangePercent + 0.0), type: false)}",
+                                    change: "${value_to_delimal(value: (regularMarketChange * dollarMultiple), type: false)}",
+                                    positive: regularMarketChangePercent > 0,
+                                    backgroundColor: customColors.app_dark_b,
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () => nextWithData(context, '/stockInfo', stockSymbol),
+                                  child: stock_box(
+                                    name: stockName,
+                                    symbol: stockSymbol,
+                                    price: "${value_to_delimal(value: (regularMarketPrice * dollarMultiple), type: false)}",
+                                    percent: "${value_to_delimal(value: (regularMarketChangePercent + 0.0), type: false)}",
+                                    change: "${value_to_delimal(value: (regularMarketChange * dollarMultiple), type: false)}",
+                                    positive: regularMarketChangePercent > 0,
+                                  ),
+                                );
+                        },
+                      ),
+                    ),
         ],
       ),
     );

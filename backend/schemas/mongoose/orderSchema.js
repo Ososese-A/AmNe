@@ -2,19 +2,23 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
     type: {
-        type: mongoose.Schema.Types.String
+        type: mongoose.Schema.Types.String,
+        required: true
     },
 
     pricePerStock: {
-        type: mongoose.Schema.Types.Number
+        type: mongoose.Schema.Types.Number,
+        required: true
     },
 
-    NoOfStocks: {
-        type: mongoose.Schema.Types.Number
+    noOfStocks: {
+        type: mongoose.Schema.Types.Number,
+        required: true
     },
 
     orderFee: {
-        type: mongoose.Schema.Types.Number
+        type: mongoose.Schema.Types.Number,
+        required: true
     }
     
 }, {timestamps: true})

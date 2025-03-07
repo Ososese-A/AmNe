@@ -51,7 +51,7 @@ Container stock_box ({
                 ?
                 "+$percent%"
                 :
-                "-$percent%"
+                "$percent%"
                 , 
                 style: TextStyle(
                   color: positive 
@@ -70,7 +70,7 @@ Container stock_box ({
                 ?
                 "+$change ETN"
                 :
-                "-$change ETN"
+                "$change ETN"
                 , 
                 style: TextStyle(
                   color: positive 

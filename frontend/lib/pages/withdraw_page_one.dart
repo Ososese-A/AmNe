@@ -3,6 +3,7 @@ import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 
 class WithdrawPageOne extends StatefulWidget {
@@ -13,8 +14,30 @@ class WithdrawPageOne extends StatefulWidget {
 }
 
 class _WithdrawPageOneState extends State<WithdrawPageOne> {
-  final String walletError = "";
-  final TextEditingController walletController = TextEditingController();
+  String walletError = "";
+  TextEditingController walletController = TextEditingController();
+
+  void _checkWallet () async {
+    walletController.text = "0xBB583e59c9D50D1C58be39a98F0397872D9D28fD";
+    final String wallet = walletController.text;
+
+    if (wallet == '') {
+      setState(() {
+        walletError = 'Please enter a valid wallet address';
+      });
+    } else {
+      final backendResponse =  await checkWallet(wallet: wallet);
+      print("This is the backendResponse from withraw page");
+      print(backendResponse);
+      if (backendResponse['isThereError']) {
+        setState(() {
+          walletError = backendResponse['error'];
+        });
+      } else {
+        nextWithData(context, '/withdrawTwo', {'address' : wallet,});
+      }
+    }
+  }
 
 
   @override
@@ -56,7 +79,8 @@ class _WithdrawPageOneState extends State<WithdrawPageOne> {
             Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  btn("Next", false, () => nextWithData(context, '/withdrawTwo', {'address' : '0xBB583e59c9D50D1CDd7645211',})),
+                  // btn("Next", false, () => ),
+                  btn("Next", false, () => _checkWallet()),
                 ],
             )
           ],

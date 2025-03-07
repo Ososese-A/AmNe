@@ -115,6 +115,7 @@ flutter:
     - assets/icons/stock.svg
     - assets/icons/edit.svg
     - assets/icons/ngn.svg
+    - assets/icons/etn.svg
     - assets/icons/wallet.svg
     
 

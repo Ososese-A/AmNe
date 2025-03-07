@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
+import 'package:frontend/add_ons/pop_up.dart';
+import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/components/main_card.dart';
+import 'package:frontend/model/accountModel.dart';
 import 'package:frontend/themes/theme.dart';
+import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+import 'package:provider/provider.dart';
 
 class TransactionDetailPage extends StatelessWidget {
   const TransactionDetailPage({super.key});
@@ -11,11 +16,29 @@ class TransactionDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> transactionDetails = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final transactionID = transactionDetails['transactionID'];
     final receiver = transactionDetails['receiver'];
     final gasFee = transactionDetails['gasFee'];
     final amount = transactionDetails['amount'];
     final total = transactionDetails['total'];
+    final balance = Provider.of<Walletmodel>(context).balance;
+    final address = Provider.of<Walletmodel>(context).address;
+
+
+    void withdrawFunds () async {
+      final backendResponse = await withdrawal(wallet: receiver, sender: address, amount: amount);
+
+      if (backendResponse["isThereError"]) {
+        pop_up(
+          ctx: context, 
+          txt: "Something went wrong on our end, please try again",
+          primaryBtn: true,
+          primaryBtnTxt: "Done",
+          primaryBtnOnTap: () => Navigator.pop(context),
+        );
+      } else {
+        setMainPage(context, "/transactionSuccess", "/transactionSuccess");
+      }
+    }
 
 
     return PopScope(
@@ -42,7 +65,7 @@ class TransactionDetailPage extends StatelessWidget {
                       SizedBox(height: 28.0,),
                         
                       Text(
-                        "145,678.9999 ETN",
+                        "${value_to_delimal(value: balance, type: false)} ETN",
                         style: TextStyle(
                             color: customColors.app_white,
                             fontSize: 16.0
@@ -62,30 +85,6 @@ class TransactionDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Transaction ID:',
-                          style: TextStyle(
-                            color: customColors.app_white,
-                            fontSize: 16.0
-                          ),
-                        ),
-                        Text(
-                          transactionID,
-                          style: TextStyle(
-                            color: customColors.app_white,
-                            fontSize: 16.0
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ), 
-                secondLine: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
                           'Receiver’s Wallet:',
                           style: TextStyle(
                             color: customColors.app_white,
@@ -96,15 +95,14 @@ class TransactionDetailPage extends StatelessWidget {
                           receiver,
                           style: TextStyle(
                             color: customColors.app_white,
-                            fontSize: 16.0
+                            fontSize: 12.0
                           ),
                         ),
                       ],
                     ),
                   ],
                 ), 
-                
-                thirdLine: Row(
+                secondLine: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -126,7 +124,7 @@ class TransactionDetailPage extends StatelessWidget {
                 
                 extend: true,
                 
-                forthLine:
+                thirdLine:
                 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -139,7 +137,7 @@ class TransactionDetailPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      amount,
+                      "${value_to_delimal(value: double.parse(amount), type: true)}",
                       style: TextStyle(
                         color: customColors.app_white,
                         fontSize: 16.0
@@ -148,7 +146,7 @@ class TransactionDetailPage extends StatelessWidget {
                   ],
                 ),
                 
-                fifthLine:
+                forthLine:
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -160,7 +158,7 @@ class TransactionDetailPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      total,
+                      "${value_to_delimal(value: total, type: true)}",
                       style: TextStyle(
                         color: customColors.app_white,
                         fontSize: 16.0
@@ -171,7 +169,7 @@ class TransactionDetailPage extends StatelessWidget {
               ),
                 
               SizedBox(height: 40.0,),
-              btn('Done', false, () => setMainAsMainPageWithData(context, 3)),
+              btn('Proceed', false, () => withdrawFunds()),
             ],
           ),
         ),
