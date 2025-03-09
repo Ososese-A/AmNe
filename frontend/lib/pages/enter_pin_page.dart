@@ -5,10 +5,12 @@ import 'package:frontend/add_ons/loading_spinner.dart';
 import 'package:frontend/add_ons/pin_dot.dart';
 import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/components/key_pad.dart';
+import 'package:frontend/model/accountModel.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/cryptUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
+import 'package:provider/provider.dart';
 
 class EnterPinPage extends StatefulWidget {
   const EnterPinPage({super.key});
@@ -57,6 +59,21 @@ class _EnterPinPageState extends State<EnterPinPage> {
       });
       //compare with pin in db and confirm session json token
       //also don't forget to handle errors
+      final profileResponse = await getAccount(type: "getProfile");
+      final firstName = profileResponse["firstName"];
+      final lastName = profileResponse["lastName"];
+      final email = profileResponse["email"];
+      final mobile = profileResponse["mobile"];
+      final address = profileResponse["address"];
+      final quest = profileResponse["accountSecurity"][0]["securityQuestion"];
+      Provider.of<Accountmodel>(context, listen: false).updateAccountInfo(
+        newFirstName: firstName, 
+        newLastName: lastName, 
+        newEmail: email, 
+        newMobile: mobile, 
+        newAddress: address,
+        newQuest: quest
+      );
       final backendResponse = await dotsAuth(dotString: dotString, ctx: context, type: 'confirmDots');
 
       //dummy test to stand in for db test
@@ -90,7 +107,6 @@ class _EnterPinPageState extends State<EnterPinPage> {
   }
 
 
-
     return Scaffold(
       appBar: nextPageInfo == null ? alt_app_bar(page: "Enter Pin", isLoading: isLoading) : nextPageInfo['retainAppBar'] != null ? alt_app_bar(page: "Enter Pin") : app_bar(context, nextPageInfo['pageName']),
       backgroundColor: customColors.app_black,
@@ -107,7 +123,10 @@ class _EnterPinPageState extends State<EnterPinPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Please confirm the pin you just set", style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
+                        Text("Enter your pin", 
+                          style: TextStyle(color: customColors.app_white, fontSize: 16.0),
+                          textAlign: TextAlign.center,
+                        ),
                         Container(
                           width: 120.0,
                           child: Row(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/svg_box.dart';
 import 'package:frontend/themes/theme.dart';
 
-AppBar main_app_bar (BuildContext ctx) {
+AppBar main_app_bar (BuildContext ctx, VoidCallback refresh) {
   return AppBar(
     automaticallyImplyLeading: false,
     backgroundColor: customColors.app_black,
@@ -23,7 +23,10 @@ AppBar main_app_bar (BuildContext ctx) {
     
 
     actions: [
-      svg_box(24.0, 24.0, "assets/icons/notification.svg"),
+      GestureDetector(
+        onTap: refresh,
+        child: svg_box(24.0, 24.0, "assets/icons/refresh.svg")
+      ),
       SizedBox(width: 20.0,)
     ],
   );

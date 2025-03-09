@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
+import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/model/accountModel.dart';
@@ -99,19 +100,34 @@ class _BuyStockPageState extends State<BuyStockPage> {
 
 
     void setMaxAmount(balance) {
-      final maxAmount = balance - 0.000042;
-      final number = balance / etnPricePerShare;
-      setState(() {
-        amountController.text = maxAmount.toString();
-        print("From set max amount");
-        print(maxAmount);
-        stockController.text = "${value_to_delimal(value: number, type: true)}";
-      });
+      if (balance > 0) {
+        final maxAmount = balance - 0.000042;
+        final number = balance / etnPricePerShare;
+        setState(() {
+          amountController.text = maxAmount.toString();
+          print("From set max amount");
+          print(maxAmount);
+          stockController.text = "${value_to_delimal(value: number, type: true)}";
+        });
+      } else {
+        setState(() {
+          amountController.text = "0";
+          amountError = "You have no Electroneum in your account please fund your account";
+        });
+
+        pop_up(
+          ctx: context, 
+          txt: "You have no Electroneum in your account please fund your account",
+          primaryBtn: true,
+          primaryBtnTxt: "Fund Account",
+          primaryBtnOnTap: () => nextNavPageWithData(context, 1),
+        );
+      }
     }
 
     void review () async {
       String theAmount = amountController.text;
-      if (theAmount == "" || theAmount == null) {
+      if (theAmount == "" || theAmount == "0") {
         setState(() {
           amountError = "Please enter a valid amount";
         });
@@ -123,6 +139,14 @@ class _BuyStockPageState extends State<BuyStockPage> {
           setState(() {
             amountError = "Insufficient funds, please add more ETN to your wallet";
           });
+
+          pop_up(
+            ctx: context, 
+            txt: "You have no Electroneum in your account please fund your account",
+            primaryBtn: true,
+            primaryBtnTxt: "Fund Account",
+            primaryBtnOnTap: () => nextNavPageWithData(context, 1),
+          );
         } else {
           priceOfStocks = double.parse(amountController.text);
           noOfStocks = double.parse(stockController.text);

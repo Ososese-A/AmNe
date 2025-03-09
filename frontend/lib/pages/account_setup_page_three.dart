@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
+import 'package:frontend/add_ons/loading_spinner.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
@@ -13,6 +14,7 @@ class AccountSetupPageThree extends StatefulWidget {
   State<AccountSetupPageThree> createState() => _AccountSetupPageThreeState();
 }
 
+
 class _AccountSetupPageThreeState extends State<AccountSetupPageThree> {
   String securityAnswerErr = '';
   TextEditingController securityAnswerController = TextEditingController();
@@ -22,7 +24,7 @@ class _AccountSetupPageThreeState extends State<AccountSetupPageThree> {
 
   void _confirm () async {
     String sQData = securityQuestion;
-    String sAData = securityAnswerController.text;
+    String sAData = securityAnswerController.text.toLowerCase();
 
     if (sAData == '') {
       setState(() {
@@ -113,21 +115,7 @@ class _AccountSetupPageThreeState extends State<AccountSetupPageThree> {
 
 
           if(isLoading)
-          Container(
-            color: customColors.app_dark_transparency,
-            child: Center(
-              child: SizedBox(
-                height: 80.0,
-                width: 80.0,
-                child: CircularProgressIndicator(
-                  color: customColors.app_light_a,
-                  strokeWidth: 8.0,
-                  strokeCap: StrokeCap.round,
-                  trackGap: 100.0,
-                ),
-              ),
-            ),
-          ),
+          loading_spinner()
         ],
       ),
     );

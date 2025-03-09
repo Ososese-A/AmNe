@@ -69,3 +69,9 @@ void nextWithData (BuildContext ctx, String route, data) {
     arguments: data,
   );
 }
+
+void nextNavPageWithData(BuildContext ctx, int data) {
+  Navigator.of(ctx).push(
+    NavigationPage.route(data),
+  );
+}

@@ -70,7 +70,7 @@ class _WithdrawPageTwoState extends State<WithdrawPageTwo> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> walletAddress = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic> ?? {};
+    final Map<String, dynamic> walletAddress = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     final address = walletAddress['address'];
     setAddress(address);
     print(walletController.text);
@@ -181,6 +181,6 @@ class _WithdrawPageTwoState extends State<WithdrawPageTwo> {
           ],
         ),
       ),
-    );;
+    );
   }
 }

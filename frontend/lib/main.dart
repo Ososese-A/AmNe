@@ -3,6 +3,8 @@ import 'package:frontend/model/accountModel.dart';
 import 'package:frontend/model/historyModel.dart';
 import 'package:frontend/notifiers/account_setup_notifier.dart';
 import 'package:frontend/notifiers/currency_notifier.dart';
+import 'package:frontend/notifiers/obscure_notifier.dart';
+import 'package:frontend/pages/about_page.dart';
 import 'package:frontend/pages/account_setup_page.dart';
 import 'package:frontend/pages/account_setup_page_three.dart';
 import 'package:frontend/pages/account_setup_page_two.dart';
@@ -51,6 +53,7 @@ void main() async {
   await Hive.initFlutter();
 
   var con = await Hive.openBox('dis');
+  con.get(1);
 
   runApp(
     MultiProvider(
@@ -59,6 +62,8 @@ void main() async {
         ChangeNotifierProvider(create: (context) => CurrencyNotifier()),
         ChangeNotifierProvider(create: (context) => isAccountSetUpNotifier()),
         ChangeNotifierProvider(create: (context) => HistoryModel()),
+        ChangeNotifierProvider(create: (context) => ObscureNotifier()),
+        ChangeNotifierProvider(create: (context) => Accountmodel()),
       ],
       child: const MyApp(),
     ),
@@ -120,6 +125,7 @@ class MyApp extends StatelessWidget {
         '/faq': (context) => FaqPage(),
         '/contact': (context) => ContactUsPage(),
         '/stats': (context) => MyStatsPage(),
+        '/about': (context) => AboutPage(),
         '/resetPinOne': (context) => ResetPinPageOne(),
         '/resetPinTwo': (context) => ResetPinPageTwo(),
         '/resetPinThree': (context) => ResetPinPageThree(),

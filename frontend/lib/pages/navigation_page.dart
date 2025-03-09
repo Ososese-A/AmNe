@@ -51,10 +51,6 @@ class _NavigationPageState extends State<NavigationPage> {
     print("Button index $index");
     setState(() {
       _selectedPage = index;
-
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   _getWalletInfo(Provider.of<Walletmodel>(context, listen: false), Provider.of<HistoryModel>(context, listen: false));
-      // });
     });
   }
 
@@ -62,7 +58,6 @@ class _NavigationPageState extends State<NavigationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // _selectedPage = widget.pageFromprev;
     setState(() {
       _selectedPage = widget.pageFromprev;
     });

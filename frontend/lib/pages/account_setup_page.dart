@@ -63,7 +63,6 @@ class _AccountSetupPageState extends State<AccountSetupPage> {
         setMainPage(context, '/accountSetupTwo', '/accountSetupTwo');
       }
     }
-
   }
 
   @override

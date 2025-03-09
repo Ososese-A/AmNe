@@ -50,7 +50,7 @@ class _SellStockPageState extends State<SellStockPage> {
 
     void review () async {
       String theAmount = stockController.text;
-      if (theAmount == "" || theAmount == null) {
+      if (theAmount == "") {
         setState(() {
           stockError = "Please enter a valid amount";
         });

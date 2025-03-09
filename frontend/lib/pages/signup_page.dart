@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
-import 'package:frontend/add_ons/google_btn.dart';
+import 'package:frontend/add_ons/loading_spinner.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
 import 'package:frontend/utilities/authUtility.dart';
@@ -17,6 +17,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   String eErrMsg = "";
   String pErrMsg = "";
+  bool isLoading = false;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -30,6 +31,10 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void _signup () async {
+    setState(() {
+      isLoading = true;
+    });
+
     String eData = emailController.text;
     String pData = passwordController.text;
 
@@ -50,6 +55,10 @@ class _SignupPageState extends State<SignupPage> {
         setMainPage(context, '/pin', '/pin');
       }
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -58,65 +67,72 @@ class _SignupPageState extends State<SignupPage> {
       resizeToAvoidBottomInset: true,
       backgroundColor: customColors.app_black,
       appBar: app_bar(context, "Sign Up"),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Column(
-            children: [
-              SizedBox(height: 56.0,),
-
-              InputField(
-                placeholder: "Email Address", 
-                iconPath: "assets/icons/mail.svg", 
-                type:  "normal",
-                error: eErrMsg != "" ? eErrMsg : "",
-                fieldHeight: 140.0,
-                errorHeight: 40.0,
-                controller: emailController,
-              ),
-
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 56.0,),
           
-              InputField(
-                placeholder: "Password", 
-                iconPath: "assets/icons/password.svg", 
-                type:  "password",
-                error: pErrMsg != "" ? pErrMsg : "",
-                fieldHeight: 220.0,
-                errorHeight: 120.0,
-                controller: passwordController,
+                  InputField(
+                    placeholder: "Email Address", 
+                    iconPath: "assets/icons/mail.svg", 
+                    type:  "normal",
+                    error: eErrMsg != "" ? eErrMsg : "",
+                    fieldHeight: 140.0,
+                    errorHeight: 40.0,
+                    controller: emailController,
+                  ),
+          
+              
+                  InputField(
+                    placeholder: "Password", 
+                    iconPath: "assets/icons/password.svg", 
+                    type:  "password",
+                    error: pErrMsg != "" ? pErrMsg : "",
+                    fieldHeight: 220.0,
+                    errorHeight: 120.0,
+                    controller: passwordController,
+                  ),
+            
+                  Container(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        btn("Sign Up", false, _signup),
+                      ],
+                    ),
+                  ),
+            
+                  SizedBox(height: 120.0),
+            
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       "Or Sign Up with:",
+                  //       style: TextStyle(
+                  //         color: customColors.app_white,
+                  //         fontSize: 20.0
+                  //       ),
+                  //     ),
+            
+                  //     SizedBox(height: 28.0,),
+            
+                  //     google_btn(() {})
+                  //   ],
+                  // )
+                ],
               ),
-        
-              Container(
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    btn("Sign Up", false, _signup),
-                  ],
-                ),
-              ),
-        
-              SizedBox(height: 120.0),
-        
-              // Column(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Text(
-              //       "Or Sign Up with:",
-              //       style: TextStyle(
-              //         color: customColors.app_white,
-              //         fontSize: 20.0
-              //       ),
-              //     ),
-        
-              //     SizedBox(height: 28.0,),
-        
-              //     google_btn(() {})
-              //   ],
-              // )
-            ],
+            ),
           ),
-        ),
+
+          if (isLoading)
+          loading_spinner()
+        ],
       ),
     );
   }

@@ -15,16 +15,69 @@ class Walletmodel extends ChangeNotifier {
   double get etnValue => _etnValue;
   String get address => _address;
 
-  void updateWalletInfo({required String newAddress, required double newBalance, required double newBalanceInNaira, required double newBalanceInDollars, required double newRate, required double newEtenValue}) {
+  void updateWalletInfo({
+    required String newAddress, 
+    required double newBalance, 
+    required double newBalanceInNaira, 
+    required double newBalanceInDollars, 
+    required double newRate, 
+    required double newEtenValue
+  }) {
     _balance = newBalance;
     _balanceInNaira = newBalanceInNaira;
     _balanceInDollars = newBalanceInDollars;
     _address = newAddress;
     _rate = newRate;
     _etnValue = newEtenValue;
-    print("This is the new wallet balance form wallet model $balance");
-    print("This is the new naira balance form wallet model $balanceInNaira");
-    print("This is the new dollars balance form wallet model $balanceInDollars");
+    notifyListeners();
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Accountmodel extends ChangeNotifier {
+  String _firstName = "";
+  String _lastName = "";
+  String _email = "";
+  String _mobile = "";
+  String _address = "";
+  String _quest = "";
+
+  String get firstName => _firstName;
+  String get lastName => _lastName;
+  String get email => _email;
+  String get mobile => _mobile;
+  String get address => _address;
+  String get quest => _quest;
+
+  void updateAccountInfo({
+    required String newFirstName, 
+    required String newLastName,
+    required String newEmail,
+    required String newMobile,
+    required String newAddress,
+    required String newQuest,
+  }) {
+    _address = newAddress;
+    _email = newEmail;
+    _firstName = newFirstName;
+    _lastName = newLastName;
+    _mobile = newMobile;
+    _quest = newQuest;
+
     notifyListeners();
   }
 }

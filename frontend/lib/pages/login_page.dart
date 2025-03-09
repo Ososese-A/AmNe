@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
-import 'package:frontend/add_ons/google_btn.dart';
+import 'package:frontend/add_ons/loading_spinner.dart';
 import 'package:frontend/add_ons/pop_up.dart';
 import 'package:frontend/components/input_field.dart';
 import 'package:frontend/themes/theme.dart';
@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String eErrMsg = "";
   String pErrMsg = "";
+  bool isLoading = false;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -31,6 +32,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login () async {
+    setState(() {
+      isLoading = true;
+    });
+
     final String eData = emailController.text;
     final String pData = passwordController.text;
     
@@ -49,6 +54,10 @@ class _LoginPageState extends State<LoginPage> {
         });
       }
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -57,77 +66,84 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: true,
       backgroundColor: customColors.app_black,
       appBar: app_bar(context, "Login"),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Column(
-            children: [
-              SizedBox(height: 56.0,),
-              InputField(
-                placeholder: "Email Address", 
-                iconPath: "assets/icons/mail.svg", 
-                type:  "normal",
-                error: eErrMsg != "" ? eErrMsg : "",
-                fieldHeight: 140.0,
-                errorHeight: 40.0,
-                controller: emailController,
-              ),
-
-              SizedBox(height: 20.0,),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 56.0,),
+                  InputField(
+                    placeholder: "Email Address", 
+                    iconPath: "assets/icons/mail.svg", 
+                    type:  "normal",
+                    error: eErrMsg != "" ? eErrMsg : "",
+                    fieldHeight: 140.0,
+                    errorHeight: 40.0,
+                    controller: emailController,
+                  ),
           
-              InputField(
-                placeholder: "Password", 
-                iconPath: "assets/icons/password.svg", 
-                type:  "password",
-                error: pErrMsg != "" ? pErrMsg : "",
-                fieldHeight: 240.0,
-                errorHeight: 120.0,
-                controller: passwordController,
-                forgotPassword: true,
-                forgotPasswordAction: () => pop_up(
-                  ctx: context,
-                  txt: 'We sent an email to you inbox please confirm if you have received the email.',
-                  minor: false,
-                  primaryBtn: true,
-                  primaryBtnTxt: 'Confirm',
-                  primaryBtnOnTap: () => next(context, '/forgotPasswordOne'),
-                  secondaryBtn: true,
-                  secondaryBtnTxt: 'Cancel',
-                  secondaryBtnOnTap: () {}
-                ),
+                  SizedBox(height: 20.0,),
+              
+                  InputField(
+                    placeholder: "Password", 
+                    iconPath: "assets/icons/password.svg", 
+                    type:  "password",
+                    error: pErrMsg != "" ? pErrMsg : "",
+                    fieldHeight: 240.0,
+                    errorHeight: 120.0,
+                    controller: passwordController,
+                    forgotPassword: true,
+                    forgotPasswordAction: () => pop_up(
+                      ctx: context,
+                      txt: 'We sent an email to you inbox please confirm if you have received the email.',
+                      minor: false,
+                      primaryBtn: true,
+                      primaryBtnTxt: 'Confirm',
+                      primaryBtnOnTap: () => next(context, '/forgotPasswordOne'),
+                      secondaryBtn: true,
+                      secondaryBtnTxt: 'Cancel',
+                      secondaryBtnOnTap: () {}
+                    ),
+                  ),
+            
+                  Container(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        btn("Login", false, _login),
+                      ],
+                    ),
+                  ),
+            
+                  SizedBox(height: 120.0),
+            
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       "Or Login with:",
+                  //       style: TextStyle(
+                  //         color: customColors.app_white,
+                  //         fontSize: 20.0
+                  //       ),
+                  //     ),
+            
+                  //     SizedBox(height: 28.0,),
+            
+                  //     google_btn(() {})
+                  //   ],
+                  // )
+                ],
               ),
-        
-              Container(
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    btn("Login", false, _login),
-                  ],
-                ),
-              ),
-        
-              SizedBox(height: 120.0),
-        
-              // Column(
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     Text(
-              //       "Or Login with:",
-              //       style: TextStyle(
-              //         color: customColors.app_white,
-              //         fontSize: 20.0
-              //       ),
-              //     ),
-        
-              //     SizedBox(height: 28.0,),
-        
-              //     google_btn(() {})
-              //   ],
-              // )
-            ],
+            ),
           ),
-        ),
+
+          if (isLoading)
+          loading_spinner()
+        ],
       ),
     );
   }

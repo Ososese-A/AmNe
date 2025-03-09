@@ -33,9 +33,10 @@ class _StockInfoPageState extends State<StockInfoPage> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
     final String stockData = ModalRoute.of(context)!.settings.arguments as String? ?? 'SYMB';
-    if (name != "" || name != null) {
+    if (name == "") {
       _getStockInfo(stockData);
     }
+    // _getStockInfo(stockData);
   }
 
   void _getStockInfo (stock) async {

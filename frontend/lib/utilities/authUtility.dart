@@ -17,8 +17,12 @@ String getU () {
 }
 
 String getJ () {
-  final j = _con.get(2);
-  return j;
+  if (_con.get(2) == null) {
+    return "";
+  } else {
+    final j = _con.get(2);
+    return j;
+  }
 }
 
 String getP () {
@@ -94,17 +98,33 @@ Future<Map<String, dynamic>> authenticate ({ required eData, required pData, req
     print('Post encryption Password: ${enPData}');
     print('Post encryption decrypted Email: ${dePData}');
 
+    String j = getJ();
+    String u = getU();
+
+    u = encrypt(u);
+
     try {
       var res = await Dio().post(
-        authResponse['authType'] == 'login' 
+        authResponse['authType'] == 'login' || authResponse['authType'] == 'passwordCheck'
         ?
         '${_url}/api/login/'
+        :
+        authResponse['authType'] == 'passwordReset'
+        ?
+        '${_url}/api/signup/resetPassword'
         :
         '${_url}/api/signup/',
         data: {
           "email": enEData,
           "password": enPData
-        }
+        },
+        options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $j',
+          'Identification': u
+        },
+      ),
       );
 
       String response = res.toString();
@@ -127,7 +147,7 @@ Future<Map<String, dynamic>> authenticate ({ required eData, required pData, req
         print('This is the uId after I set it up in authenticate ${getU()}');
         print('This is the jId after I set it up in authenticate ${getJ()}');
         // print('The setup works');
-        authResponse['authType'] == 'signup' ? nextPage(ctx, '/pin') : nextPage(ctx, '/epin');
+        authResponse['authType'] == 'signup' ? nextPage(ctx, '/pin') : authResponse['authType'] == 'signup' ? nextPage(ctx, '/epin') : authResponse["isThereError"] = false;
         return authResponse;
       }
 
@@ -572,7 +592,6 @@ Future<Map<String, dynamic>> getAccount ({required type}) async {
     try {
       var res = await Dio().get(
         '${_url}/api/user/',
-        // 'http://10.73.2.209:8080/api/user/',
         options: Options(
         headers: {
           'Content-Type': 'application/json',
@@ -599,6 +618,11 @@ Future<Map<String, dynamic>> getAccount ({required type}) async {
             if (result['accountSecurity'] != null || result['accountSecurity'] != '') {
               return result['accountSecurity'];
             }
+      }  else if(authResponse['type'] == 'getProfile'){
+        //get the responses
+        //put it in variables
+        //sent it to the receiver
+        return result;
       }  else {
             setAS(false);
             if (result['_id'] != null) {
@@ -1191,7 +1215,6 @@ Future<Map<String, dynamic>> getStockInfo ({required type, required String symbo
 
 
 
-
 Future<Map<String, dynamic>> placeOrder ({
   required bool isItBuy, 
   required String symbol, 
@@ -1278,8 +1301,6 @@ Future<Map<String, dynamic>> placeOrder ({
       }
     }
 }
-
-
 
 
 

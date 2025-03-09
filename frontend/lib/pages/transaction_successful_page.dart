@@ -23,6 +23,6 @@ class TransactionSuccessfulPage extends StatelessWidget {
           ],
         ),
       ),
-    );;
+    );
   }
 }

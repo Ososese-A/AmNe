@@ -5,7 +5,6 @@ import 'package:frontend/add_ons/value_to_decimal.dart';
 import 'package:frontend/model/accountModel.dart';
 import 'package:frontend/model/historyModel.dart';
 import 'package:frontend/themes/theme.dart';
-import 'package:frontend/utilities/authUtility.dart';
 import 'package:frontend/utilities/navigatorUtility.dart';
 import 'package:provider/provider.dart';
 

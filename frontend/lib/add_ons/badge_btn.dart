@@ -16,7 +16,7 @@ GestureDetector badge_btn (String text, onTap) {
             text,
             style: TextStyle(
               color: customColors.app_white,
-              fontSize: 16.0
+              fontSize: 14.0
             ),
           ),
         ),

@@ -68,37 +68,39 @@ class _ResetPinPageTwoState extends State<ResetPinPageTwo> {
       appBar: app_bar(context, 'Reset Pin'),
       backgroundColor: customColors.app_black,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              height: 160.0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Please Enter the new pin you wish to set", style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
-                  Container(
-                    width: 120.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        dot_count >= 1 ? pin_dot(active:  true) : pin_dot(active:  false),
-                        dot_count >= 2 ? pin_dot(active:  true) : pin_dot(active:  false),
-                        dot_count >= 3 ? pin_dot(active:  true) : pin_dot(active:  false),
-                        dot_count == 4 ? pin_dot(active:  true) : pin_dot(active:  false),
-                      ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                height: 160.0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Please Enter the new pin you wish to set", style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
+                    Container(
+                      width: 120.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          dot_count >= 1 ? pin_dot(active:  true) : pin_dot(active:  false),
+                          dot_count >= 2 ? pin_dot(active:  true) : pin_dot(active:  false),
+                          dot_count >= 3 ? pin_dot(active:  true) : pin_dot(active:  false),
+                          dot_count == 4 ? pin_dot(active:  true) : pin_dot(active:  false),
+                        ],
+                      ),
                     ),
-                  ),
-                  Text(pError, style: TextStyle(color: customColors.app_red, fontSize: 16.0),),
-                ],
+                    Text(pError, style: TextStyle(color: customColors.app_red, fontSize: 16.0),),
+                  ],
+                ),
               ),
-            ),
-            KeyPad(
-              set: _setDotCount,
-              reset: _resetDotCount,
-              get: _getDotString,
-            )
-          ],
+              KeyPad(
+                set: _setDotCount,
+                reset: _resetDotCount,
+                get: _getDotString,
+              )
+            ],
+          ),
         ),
       )
     );

@@ -3,7 +3,6 @@ import 'package:frontend/add_ons/app_bar.dart';
 import 'package:frontend/add_ons/btn.dart';
 import 'package:frontend/components/main_card.dart';
 import 'package:frontend/themes/theme.dart';
-import 'package:frontend/utilities/navigatorUtility.dart';
 
 class TransactionViewPage extends StatefulWidget {
   const TransactionViewPage({super.key});
@@ -15,7 +14,7 @@ class TransactionViewPage extends StatefulWidget {
 class _TransactionViewPageState extends State<TransactionViewPage> {
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> transactionInfo = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic> ?? {};
+    Map<String, dynamic> transactionInfo = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     String transactionID = transactionInfo['transactionId'];
     String participant = transactionInfo['participant'];
     bool participantType = transactionInfo['participantType'];
@@ -85,7 +84,7 @@ class _TransactionViewPageState extends State<TransactionViewPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        participantType ? 'Sender:' : 'Receiver:',
+                        transactionType == "Withdrawal" ? 'Receiver:' : 'Sender:',
                         style: TextStyle(
                           color: customColors.app_white,
                           fontSize: 16.0
@@ -121,7 +120,7 @@ class _TransactionViewPageState extends State<TransactionViewPage> {
                     '$transactionFee $currency',
                     style: TextStyle(
                       color: customColors.app_white,
-                      fontSize: 16.0
+                      fontSize: 12.0
                     ),
                   ),
                 ],

@@ -39,8 +39,8 @@ Container stock_box ({
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(symbol, style: TextStyle(color: customColors.app_white, fontSize: 16.0),),
-              Text("$price ETN", style: TextStyle(color: customColors.app_white, fontSize: 16.0),)
+              Text(symbol, style: TextStyle(color: customColors.app_white, fontSize: 14.0),),
+              Text("$price ETN", style: TextStyle(color: customColors.app_white, fontSize: 12.0),)
             ],
           ),
           Row(

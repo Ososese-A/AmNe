@@ -51,7 +51,7 @@ Future<void> pop_up ({
                         // if (primaryBtnOnTap != null) primaryBtnOnTap!();
                         Navigator.of(ctx).pop();
                         Future.delayed(Duration(milliseconds: 300), () {
-                          if (primaryBtnOnTap != null) primaryBtnOnTap!();
+                          if (primaryBtnOnTap != null) primaryBtnOnTap();
                         });
                       })
                       :
@@ -65,7 +65,7 @@ Future<void> pop_up ({
                         // if (secondaryBtnOnTap != null) secondaryBtnOnTap!();
                         Navigator.of(ctx).pop();
                         Future.delayed(Duration(milliseconds: 300), () {
-                          if (secondaryBtnOnTap != null) secondaryBtnOnTap!();
+                          if (secondaryBtnOnTap != null) secondaryBtnOnTap();
                         });
                       })
                       :
