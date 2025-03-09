@@ -12,8 +12,12 @@ final _con = Hive.box('dis');
 final _url = "https://amne.onrender.com";
 
 String getU () {
-  final u = _con.get(1);
-  return u;
+  if (_con.get(1) == null) {
+    return "";
+  } else {
+    final u = _con.get(1);
+    return u;
+  }
 }
 
 String getJ () {
@@ -78,6 +82,7 @@ void setExpiryDate (markedDate, expires) {
 }
 
 
+
 Future<Map<String, dynamic>> authenticate ({ required eData, required pData, required ctx, required type}) async {
     Map<String, dynamic> authResponse = {};
     authResponse['isThereError'] = true;
@@ -99,9 +104,13 @@ Future<Map<String, dynamic>> authenticate ({ required eData, required pData, req
     print('Post encryption decrypted Email: ${dePData}');
 
     String j = getJ();
-    String u = getU();
+    // String u = getU();
 
-    u = encrypt(u);
+    if (j == "") {
+      j = encrypt("This is a place holder encryption value to avoid any errors");
+    } else {
+      j = encrypt(j);
+    }
 
     try {
       var res = await Dio().post(
@@ -122,7 +131,6 @@ Future<Map<String, dynamic>> authenticate ({ required eData, required pData, req
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $j',
-          'Identification': u
         },
       ),
       );
@@ -147,16 +155,16 @@ Future<Map<String, dynamic>> authenticate ({ required eData, required pData, req
         print('This is the uId after I set it up in authenticate ${getU()}');
         print('This is the jId after I set it up in authenticate ${getJ()}');
         // print('The setup works');
-        authResponse['authType'] == 'signup' ? nextPage(ctx, '/pin') : authResponse['authType'] == 'signup' ? nextPage(ctx, '/epin') : authResponse["isThereError"] = false;
+        authResponse['authType'] == 'login' ? nextPage(ctx, '/epin') : authResponse['authType'] == 'signup' ? nextPage(ctx, '/pin') : authResponse["isThereError"] = false;
         return authResponse;
       }
 
       return authResponse;
     } on DioException catch (e) {
       final errorMsg = e.response?.data;
-      // print('Error: ${e.response?.data}');
-      // print("This is the type ${errorMsg.runtimeType}");
-      // print("This is the type ${errorMsg['error'].runtimeType}");
+      print('Error: ${e.response?.data}');
+      print("This is the type ${errorMsg.runtimeType}");
+      print("This is the type ${errorMsg['error'].runtimeType}");
       //this is from the prev sign up
         if(authResponse['authType'] == 'signup') {
           if (errorMsg != null && errorMsg['error'] != null) {
